@@ -97,7 +97,8 @@ def log_path(sid, st):
 
 
 def write_header(path, sid, st):
-    models = ", ".join(st.get("models") or ["unknown"])
+    known = [m for m in st.get("models") or [] if m != "unknown"]
+    models = ", ".join(known or ["unknown"])
     header = (
         "---\n"
         f"session_id: {sid}\n"
@@ -135,11 +136,18 @@ def append(path, text):
 
 
 def note_model(st, model):
-    if model:
-        st.setdefault("models", [])
-        if model not in st["models"]:
-            st["models"].append(model)
+    """Record a model; 'unknown' is only a placeholder until a real model is seen."""
+    if not model:
+        return
+    models = [m for m in st.get("models", []) if m != "unknown"]
+    if model == "unknown":
+        if not models:
+            models = ["unknown"]
+    else:
+        if model not in models:
+            models.append(model)
         st["current_model"] = model
+    st["models"] = models
 
 
 def on_session(data):
