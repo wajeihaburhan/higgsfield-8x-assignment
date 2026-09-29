@@ -68,16 +68,23 @@ export const MOTION_MODELS = [
 export const MAX_COUNT = 4;
 export const STARTING_CREDITS = 300;
 
+/** One-click prompt chips; each is worded so the mock picks a matching subject (see DEMO-PROMPTS.md). */
 export const EXAMPLE_PROMPTS: Record<Mode, string[]> = {
   image: [
-    "Aerial view of a Norwegian fjord at sunrise, volumetric light",
-    "Portrait of a pug wrapped in a wool blanket, soft window light",
-    "Close portrait of a grizzly bear, cinematic rim lighting",
+    "Neon-lit city street at night, rain reflections, cyberpunk, cinematic",
+    "Latte art in a ceramic cup on a wooden cafe table, soft morning light",
+    "Leopard on a dusty safari trail, wildlife photography, telephoto",
+    "Portrait of a woman in a wheat field at golden hour, backlit hair",
+    "Macro shot of purple petunia flowers, dew on the petals",
+    "Vintage 1930s car parked on a city street, chrome details, film grain",
   ],
   video: [
+    "Hot air balloon rising into a clear sky, slow drift",
+    "Concert crowd with hands up under stage lights, energetic",
+    "Waterfall cascading through a mossy gorge, mist in the air",
+    "Slow camera pan across snowy alpine peaks above the clouds",
+    "Black labrador puppy looking up at the camera, gentle handheld",
     "A jellyfish drifting through deep blue water, neon glow",
-    "Slow orbit around a granite valley at golden hour",
-    "A pug breathing softly under a blanket, gentle handheld motion",
   ],
 };
 
@@ -138,5 +145,5 @@ export const STYLE_WORDS = new Set([
   "cinematic", "volumetric", "light", "lighting", "neon", "cyberpunk", "film", "35mm", "grain", "macro", "dolly",
   "pan", "orbit", "tilt", "zoom", "handheld", "drone", "aerial", "golden", "hour", "dawn", "dusk", "sunrise",
   "sunset", "fog", "misty", "glow", "glowing", "soft", "moody", "vfx", "particles", "bokeh", "anamorphic", "slow",
-  "motion", "rim", "studio", "portrait",
+  "motion", "rim", "studio", "portrait", "night", "rain", "reflections", "telephoto", "backlit", "dew",
 ]);

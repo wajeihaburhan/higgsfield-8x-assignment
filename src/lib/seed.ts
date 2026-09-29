@@ -143,6 +143,18 @@ export const IMAGE_ITEMS: ImageItem[] = [
     prompt: "Close portrait of a grizzly bear, studio backdrop, soft key light", tags: ["Studio Light", "Wildlife", "Portrait"], likesCount: 540, author: DEV }),
   img({ id: "i-hiker", title: "Cliffside Hiker", assetKey: "1015", aspectRatio: "9:16", model: "Lumen-Turbo", stylePreset: "cinematic", parentId: null, hours: 5, steps: 14, sampler: "unipc",
     prompt: "A lone hiker on a cliff edge above a fjord at dawn, volumetric light", tags: ["Cinematic Lighting", "Landscape"], likesCount: 418, author: DEV }),
+  img({ id: "i-neon", title: "Neon Streets", assetKey: "274", aspectRatio: "16:9", model: "Aurora-XL", stylePreset: "cyberpunk", parentId: null, hours: 10, cfg: 8.5,
+    prompt: "Neon-lit city street at night, rain reflections, cyberpunk, cinematic", tags: ["Cyberpunk", "Urban", "Night"], likesCount: 6120, author: AMA }),
+  img({ id: "i-latte", title: "Morning Latte", assetKey: "431", aspectRatio: "4:3", model: "Prism-2", stylePreset: "studio", parentId: null, hours: 9,
+    prompt: "Latte art in a ceramic cup on a wooden cafe table, soft morning light", tags: ["Studio Light", "Food", "Coffee"], likesCount: 2210, author: DEV }),
+  img({ id: "i-leopard", title: "Safari Leopard", assetKey: "219", aspectRatio: "16:9", model: "Aurora-XL", stylePreset: "cinematic", parentId: null, hours: 7, steps: 42,
+    prompt: "Leopard on a dusty safari trail, wildlife photography, telephoto", tags: ["Cinematic Lighting", "Wildlife", "Safari"], likesCount: 3874, author: KENJI }),
+  img({ id: "i-petunia", title: "Violet Bloom", assetKey: "152", aspectRatio: "1:1", model: "Prism-2", stylePreset: "none", parentId: null, hours: 4,
+    prompt: "Macro shot of purple petunia flowers, dew on the petals", tags: ["Macro", "Flowers"], likesCount: 1290, author: SOFIA }),
+  img({ id: "i-golden", title: "Golden Hour Field", assetKey: "65", aspectRatio: "9:16", model: "Aurora-XL", stylePreset: "film", parentId: null, hours: 3,
+    prompt: "Portrait of a woman in a wheat field at golden hour, backlit hair, 35mm film", tags: ["Film Grain", "Portrait", "Golden Hour"], likesCount: 4518, author: MIRA }),
+  img({ id: "i-car", title: "Chrome Classic", assetKey: "111", aspectRatio: "4:3", model: "Lumen-Turbo", stylePreset: "film", parentId: null, hours: 2, steps: 14, sampler: "unipc",
+    prompt: "Vintage 1930s car parked on a city street, chrome details, film grain", tags: ["Film Grain", "Vehicles", "Retro"], likesCount: 987, author: DEV }),
 ];
 
 /* ------------------------------------------------------------------ */
@@ -181,6 +193,18 @@ export const VIDEO_ITEMS: VideoItem[] = [
     prompt: "Close portrait of a grizzly bear, slow dolly in to the eyes, rim light", tags: ["Zoom", "Keyframes", "Wildlife"], likesCount: 3390, author: KENJI }),
   vid({ id: "v-bear-square", title: "Grizzly — Square Cut", assetKey: "433", aspectRatio: "1:1", model: "Higgsfield-V2", seconds: 3, fps: 60, motion: 80, camera: "orbit", motionModel: "vector-x", startFrameId: "i-bear", parentId: "v-bear", hours: 8,
     prompt: "Grizzly bear portrait, fast orbit, dramatic rim light", tags: ["Orbit", "High Motion", "60fps"], likesCount: 688, author: KENJI }),
+  vid({ id: "v-balloon", title: "Balloon Ascent", assetKey: "401", aspectRatio: "9:16", model: "Motion-Pro", seconds: 5, fps: 30, motion: 35, camera: "zoom", motionModel: "vector-s", startFrameId: null, parentId: null, hours: 11,
+    prompt: "Hot air balloon rising into a clear sky, slow drift", tags: ["Zoom", "Travel", "Sky"], likesCount: 2764, author: AMA }),
+  vid({ id: "v-neon", title: "Neon Streets — Drift", assetKey: "274", aspectRatio: "16:9", model: "Motion-Pro", seconds: 5, fps: 30, motion: 60, camera: "pan", motionModel: "vector-p", startFrameId: "i-neon", parentId: null, hours: 9,
+    prompt: "Slow lateral drift down a neon city street at night, rain reflections", tags: ["Camera Pan", "Keyframes", "Night"], likesCount: 5102, author: AMA }),
+  vid({ id: "v-concert", title: "Front Row Energy", assetKey: "452", aspectRatio: "16:9", model: "Cinematic-AI", seconds: 5, fps: 60, motion: 85, camera: "pan", motionModel: "vector-x", startFrameId: null, parentId: null, hours: 6,
+    prompt: "Concert crowd with hands up under stage lights, energetic", tags: ["Camera Pan", "High Motion", "Music"], likesCount: 3350, author: SOFIA }),
+  vid({ id: "v-waterfall", title: "Gorge Falls", assetKey: "15", aspectRatio: "9:16", model: "Higgsfield-V2", seconds: 10, fps: 24, motion: 40, camera: "zoom", motionModel: "vector-s", startFrameId: null, parentId: null, hours: 5,
+    prompt: "Waterfall cascading through a mossy gorge, mist in the air", tags: ["Zoom", "Nature", "Waterfall"], likesCount: 1876, author: KENJI }),
+  vid({ id: "v-snow", title: "Alpine Traverse", assetKey: "29", aspectRatio: "16:9", model: "Cinematic-AI", seconds: 10, fps: 24, motion: 30, camera: "pan", motionModel: "vector-s", startFrameId: null, parentId: null, hours: 1,
+    prompt: "Slow camera pan across snowy alpine peaks above the clouds", tags: ["Camera Pan", "Landscape", "Snow"], likesCount: 1422, author: MIRA }),
+  vid({ id: "v-puppy", title: "Puppy Eyes", assetKey: "237", aspectRatio: "1:1", model: "Higgsfield-V2", seconds: 3, fps: 30, motion: 20, camera: "pan", motionModel: "vector-p", startFrameId: null, parentId: null, hours: 0.5,
+    prompt: "Black labrador puppy looking up at the camera, gentle handheld", tags: ["Camera Pan", "Animals", "Pets"], likesCount: 2980, author: DEV }),
 ];
 
 /* ------------------------------------------------------------------ */

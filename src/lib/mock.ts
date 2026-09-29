@@ -2,7 +2,7 @@ import { cameraOf, modelById, stylePreset } from "./catalog";
 import type { CSSProperties } from "react";
 import type { AspectRatio, Generation, Look, Op, Output, Recipe, TakeStatus } from "./types";
 
-// Small curated local set (see public/mock): every key exists as an image in every ratio
+// Curated local set of 18 subjects (see public/mock): every key exists as an image in every ratio
 // (1:1, 16:9, 9:16, 4:3) and as a 4s clip in 1:1, 16:9 and 9:16.
 // Keys are Picsum/Unsplash photo ids; tags let prompts pull relevant results.
 const ASSETS: Record<string, string[]> = {
@@ -12,6 +12,18 @@ const ASSETS: Record<string, string[]> = {
   "1043": ["mountain", "forest", "river", "valley", "trees", "landscape", "nature", "yosemite", "misty", "hike", "granite"],
   "1062": ["pug", "dog", "pet", "blanket", "bed", "window", "cozy", "portrait", "soft", "cute"],
   "433": ["bear", "animal", "wildlife", "portrait", "fur", "wild", "grizzly", "close"],
+  "15": ["waterfall", "falls", "river", "stream", "rocks", "gorge", "canyon", "nature", "mist", "cascade"],
+  "57": ["city", "street", "urban", "buildings", "downtown", "brick", "road", "alley", "architecture", "morning"],
+  "274": ["city", "night", "neon", "times", "square", "lights", "billboards", "cyberpunk", "nightlife", "signs"],
+  "111": ["car", "vintage", "classic", "retro", "automobile", "hotrod", "chrome", "oldtimer", "vehicle"],
+  "219": ["leopard", "cheetah", "cat", "safari", "wildlife", "savanna", "jungle", "predator", "africa", "spotted"],
+  "237": ["puppy", "dog", "labrador", "black", "pet", "cute", "wooden", "floor", "eyes"],
+  "431": ["coffee", "latte", "cafe", "espresso", "cup", "barista", "foam", "art", "breakfast", "food"],
+  "401": ["balloon", "hot", "air", "sky", "flight", "adventure", "travel", "colorful", "float", "rise"],
+  "452": ["concert", "crowd", "music", "stage", "festival", "lights", "party", "fans", "rave", "live"],
+  "65": ["woman", "girl", "golden", "hour", "sunset", "field", "hair", "backlit", "wheat", "summer"],
+  "152": ["flower", "flowers", "petunia", "petals", "purple", "violet", "bloom", "garden", "botanical", "spring"],
+  "29": ["snow", "snowy", "peaks", "alpine", "alps", "himalaya", "glacier", "mountains", "winter", "summit"],
 };
 const KEYS = Object.keys(ASSETS);
 const SUBJECT_TAGS: Record<string, string[]> = {
@@ -21,6 +33,18 @@ const SUBJECT_TAGS: Record<string, string[]> = {
   "1043": ["Landscape", "Nature"],
   "1062": ["Animals", "Cozy"],
   "433": ["Wildlife", "Portrait"],
+  "15": ["Nature", "Waterfall"],
+  "57": ["Urban", "Architecture"],
+  "274": ["Urban", "Night"],
+  "111": ["Vehicles", "Retro"],
+  "219": ["Wildlife", "Safari"],
+  "237": ["Animals", "Pets"],
+  "431": ["Food", "Coffee"],
+  "401": ["Travel", "Sky"],
+  "452": ["Music", "Crowd"],
+  "65": ["Portrait", "Golden Hour"],
+  "152": ["Macro", "Flowers"],
+  "29": ["Landscape", "Snow"],
 };
 export const SUBJECT_WORDS = new Set(Object.values(ASSETS).flat());
 

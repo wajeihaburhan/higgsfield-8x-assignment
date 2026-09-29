@@ -360,8 +360,39 @@ ASSET_TAGS: dict[str, set[str]] = {
     "1043": {"mountain", "forest", "river", "valley", "trees", "landscape", "nature", "yosemite", "misty", "granite"},
     "1062": {"pug", "dog", "pet", "blanket", "bed", "window", "cozy", "portrait", "soft", "cute"},
     "433": {"bear", "animal", "wildlife", "portrait", "fur", "wild", "grizzly", "close"},
+    "15": {"waterfall", "falls", "river", "stream", "rocks", "gorge", "canyon", "nature", "mist", "cascade"},
+    "57": {"city", "street", "urban", "buildings", "downtown", "brick", "road", "alley", "architecture", "morning"},
+    "274": {"city", "night", "neon", "times", "square", "lights", "billboards", "cyberpunk", "nightlife", "signs"},
+    "111": {"car", "vintage", "classic", "retro", "automobile", "hotrod", "chrome", "oldtimer", "vehicle"},
+    "219": {"leopard", "cheetah", "cat", "safari", "wildlife", "savanna", "jungle", "predator", "africa", "spotted"},
+    "237": {"puppy", "dog", "labrador", "black", "pet", "cute", "wooden", "floor", "eyes"},
+    "431": {"coffee", "latte", "cafe", "espresso", "cup", "barista", "foam", "art", "breakfast", "food"},
+    "401": {"balloon", "hot", "air", "sky", "flight", "adventure", "travel", "colorful", "float", "rise"},
+    "452": {"concert", "crowd", "music", "stage", "festival", "lights", "party", "fans", "rave", "live"},
+    "65": {"woman", "girl", "golden", "hour", "sunset", "field", "hair", "backlit", "wheat", "summer"},
+    "152": {"flower", "flowers", "petunia", "petals", "purple", "violet", "bloom", "garden", "botanical", "spring"},
+    "29": {"snow", "snowy", "peaks", "alpine", "alps", "himalaya", "glacier", "mountains", "winter", "summit"},
 }
-SUBJECT_TAGS = {"1015": ["Landscape", "Aerial"], "1025": ["Animals", "Portrait"], "1069": ["Underwater", "Macro"], "1043": ["Landscape", "Nature"], "1062": ["Animals", "Cozy"], "433": ["Wildlife", "Portrait"]}
+SUBJECT_TAGS: dict[str, list[str]] = {
+    "1015": ["Landscape", "Aerial"],
+    "1025": ["Animals", "Portrait"],
+    "1069": ["Underwater", "Macro"],
+    "1043": ["Landscape", "Nature"],
+    "1062": ["Animals", "Cozy"],
+    "433": ["Wildlife", "Portrait"],
+    "15": ["Nature", "Waterfall"],
+    "57": ["Urban", "Architecture"],
+    "274": ["Urban", "Night"],
+    "111": ["Vehicles", "Retro"],
+    "219": ["Wildlife", "Safari"],
+    "237": ["Animals", "Pets"],
+    "431": ["Food", "Coffee"],
+    "401": ["Travel", "Sky"],
+    "452": ["Music", "Crowd"],
+    "65": ["Portrait", "Golden Hour"],
+    "152": ["Macro", "Flowers"],
+    "29": ["Landscape", "Snow"],
+}
 STYLE_TAGS = [(r"\b(cinematic|volumetric|anamorphic|rim)\b", "Cinematic Lighting"), (r"\b(neon|cyberpunk)\b", "Cyberpunk"), (r"\b(film|35mm|grain)\b", "Film Grain")]
 CAMERA_TAGS = {"zoom": "Zoom", "pan": "Camera Pan", "tilt": "Tilt", "orbit": "Orbit"}
 STOP_WORDS = {"a", "an", "the", "of", "in", "on", "at", "with", "and", "shot", "view", "through", "around"}

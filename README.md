@@ -15,7 +15,9 @@ npm run dev        # http://localhost:3000 (redirects to /showcase)
 
 Production build: `npm run build && npm start`.
 
-The first load includes a **Sample project**: 12 seeded images and 9 seeded videos arranged in branching chains. All state is saved in localStorage. Use **Profile → Reset demo data** to start over.
+The first load includes a **Sample project**: 18 seeded images and 15 seeded videos, some arranged in branching chains. All state is saved in localStorage. Use **Profile → Reset demo data** to start over.
+
+**Demo prompts:** [DEMO-PROMPTS.md](DEMO-PROMPTS.md) lists 12 image and 12 video prompts, each checked to land on its subject, plus a three-minute demo script.
 
 ## Screens
 
@@ -141,7 +143,7 @@ src/store/useStudio.ts  Zustand store saved to localStorage (takes, drafts, acti
 
 - **Status comes from time.** Queued, rendering and done are worked out from each take's `startAt`, `endAt` and the outputs' `readyAt`, so jobs still running when you reload pick up where they left off.
 - **Believable mock outputs:**
-  - Images come from 6 local photos in 4 aspect ratios, and videos from 18 short clips.
+  - Images come from 18 local subjects in 4 aspect ratios (72 files), and videos from 54 short clips (18 subjects × 3 ratios, with zoom-in, zoom-out and pan motion).
   - References keep their subject, prompt keywords rank the candidates, and the seed makes results reproducible.
   - Variations use deterministic crop, tint and mirror "looks", so four variations of one source look distinct.
 - **Swapping in a real provider** means replacing `simulate()` in `src/lib/mock.ts` with an API call that returns the same fields.
@@ -167,7 +169,7 @@ See [backend/README.md](backend/README.md) for endpoints, environment variables 
 
 ## Credits
 
-- Photos: [Unsplash](https://unsplash.com) via [Lorem Picsum](https://picsum.photos) (ids 1015, 1025, 1043, 1062, 1069, 433), under the Unsplash License. The clips are slow pan-and-zoom renders of those photos, made with ffmpeg.
+- Photos: [Unsplash](https://unsplash.com) via [Lorem Picsum](https://picsum.photos), under the Unsplash License. The 18 Picsum IDs are listed in [DEMO-PROMPTS.md](DEMO-PROMPTS.md#asset-credits). The clips are slow zoom and pan renders of those photos, made with ffmpeg.
 - The seeded authors, likes and model names are fictional demo data.
 
 ## AI agent logs

@@ -296,7 +296,7 @@ export const useStudio = create<StudioState>()(
       };
     },
     {
-      name: "takes-studio-v4",
+      name: "takes-studio-v5",
       storage: createJSONStorage(() => safeStorage),
       partialize: ({ projects, activeProjectId, generations, credits, drafts, draftParents, seedLocked, view }) => ({
         projects,
