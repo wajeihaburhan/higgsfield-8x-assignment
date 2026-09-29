@@ -71,6 +71,10 @@ The first load includes a **Sample project**: 18 seeded images and 15 seeded vid
 - **Parameter remix drawer:** click a card to open it. It includes a **frame extraction filmstrip** of 5 frames; each can become a start frame, an end frame, an Image Studio style reference, or a download.
 
 ### Shared
+- **Now rendering tray:** sits at the top of each studio, above the composer, and on the Showcase.
+  - A job appears there the instant you press Generate, even when the feed is off-screen.
+  - It shows the stage (in queue, step n/N for images, frame n/N for video), a live progress bar and an ETA.
+  - When done, it shows the result thumbnail with **View** and **Remix** for 8 seconds, then slides away.
 - **Remix drawer:** a live `recipe.json` with modified keys highlighted, plus mode-specific tweaks.
   - **Remix now / Remix with changes**, **Fork to composer**, **Exact** (same seed).
   - On images, **Animate** opens Video Studio with that still as the start frame.

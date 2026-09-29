@@ -13,6 +13,9 @@ import { Header } from "./Header";
 import { ProfileDrawer } from "./ProfileDrawer";
 import { Toast } from "./Toast";
 
+/** How long a finished take stays in the render tray before it slides away. */
+export const RECENT_MS = 8000;
+
 const NowContext = createContext(0);
 /** Shared clock for progress UI; ticks only while something is rendering. */
 export const useStudioNow = () => useContext(NowContext);
@@ -32,7 +35,8 @@ export function StudioShell({ children }: { children: React.ReactNode }) {
   }, []);
 
   const latestEnd = useStudio((s) => s.generations.reduce((m, g) => Math.max(m, g.endAt), 0));
-  const now = useNow(latestEnd);
+  // Tick a little past the last job so finished takes can leave the render tray on time.
+  const now = useNow(latestEnd + RECENT_MS);
   const generations = useStudio((s) => s.generations);
   const activeProjectId = useStudio((s) => s.activeProjectId);
   const inpaintKey = useStudio((s) => s.inpainting?.outputId);

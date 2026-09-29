@@ -10,6 +10,7 @@ import { applyFilters, useStudio } from "@/store/useStudio";
 import { FilterPills } from "../feed/FilterPills";
 import { MasonryGrid } from "../feed/Grid";
 import { useStudioNow } from "../shell/StudioShell";
+import { RenderQueue } from "./RenderQueue";
 
 const SECTIONS: { mode: Mode; title: string; href: string; cta: string; Icon: typeof Film; empty: string }[] = [
   { mode: "image", title: "Images", href: "/image", cta: "Open Image Studio", Icon: ImageIcon, empty: "No images match yet." },
@@ -74,6 +75,7 @@ export function ShowcaseScreen() {
           </div>
         </div>
 
+        <RenderQueue />
         <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
           <Stat label="Images" value={imageCount} Icon={ImageIcon} />
           <Stat label="Videos" value={videoCount} Icon={Film} />

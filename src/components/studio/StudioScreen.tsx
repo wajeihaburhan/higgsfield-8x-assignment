@@ -10,6 +10,7 @@ import { GraphView } from "../feed/GraphView";
 import { MasonryGrid } from "../feed/Grid";
 import { useStudioNow } from "../shell/StudioShell";
 import { Segmented } from "../ui/controls";
+import { RenderQueue } from "./RenderQueue";
 
 const COPY: Record<Mode, { eyebrow: string; title: string; empty: string }> = {
   image: { eyebrow: "Image Studio", title: "Compose a still", empty: "Write a prompt above to make your first image." },
@@ -45,6 +46,7 @@ export function StudioScreen({ mode, composer }: { mode: Mode; composer: React.R
           <div className="hidden font-mono text-[11px] text-faint sm:block">{takes.length} takes</div>
         </div>
 
+        <RenderQueue mode={mode} />
         {composer}
 
         <div className="sticky top-16 z-20 -mx-4 mt-6 flex items-center gap-3 bg-gradient-to-b from-bg via-bg/90 to-transparent px-4 pb-3 pt-2 sm:-mx-6 sm:px-6">
