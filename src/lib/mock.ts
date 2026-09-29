@@ -1,4 +1,4 @@
-import { modelById } from "./catalog";
+import { modelById, presetOf } from "./catalog";
 import type { AspectRatio, Generation, Output, Recipe, TakeStatus } from "./types";
 
 // Small curated local set (see public/mock): every key exists as an image and a clip in each ratio.
@@ -12,10 +12,46 @@ const ASSETS: Record<string, string[]> = {
   "433": ["bear", "animal", "wildlife", "portrait", "fur", "wild", "grizzly", "close"],
 };
 const KEYS = Object.keys(ASSETS);
+const SUBJECT_TAGS: Record<string, string[]> = {
+  "1015": ["Landscape", "Aerial"],
+  "1025": ["Animals", "Portrait"],
+  "1069": ["Underwater", "Macro"],
+  "1043": ["Landscape", "Nature"],
+  "1062": ["Animals", "Cozy"],
+  "433": ["Wildlife", "Portrait"],
+};
+export const SUBJECT_WORDS = new Set(Object.values(ASSETS).flat());
+
+const PROMPT_TAGS: [RegExp, string][] = [
+  [/\b(cinematic|volumetric|anamorphic)\b/, "Cinematic Lighting"],
+  [/\b(neon|cyberpunk)\b/, "Cyberpunk"],
+  [/\b(vfx|particles|explosion|sparks)\b/, "VFX"],
+  [/\b(pan|panning|tracking)\b/, "Camera Pan"],
+  [/\b(film|35mm|grain)\b/, "Film Grain"],
+];
+
+/** Feed tags for a take: preset, prompt style words, subject of the first result, and motion. */
+export function tagsFor(recipe: Recipe, firstKey: string): string[] {
+  const prompt = recipe.prompt.toLowerCase();
+  const tags = [
+    presetOf(recipe.mode, recipe.presetId).tag,
+    ...PROMPT_TAGS.filter(([re]) => re.test(prompt)).map(([, t]) => t),
+    ...(SUBJECT_TAGS[firstKey] ?? []),
+    recipe.mode === "video" ? "Motion" : null,
+  ].filter((t): t is string => !!t);
+  return [...new Set(tags)].slice(0, 4);
+}
+
+export function titleFrom(prompt: string) {
+  const words = prompt.replace(/[^\w\s'-]/g, " ").split(/\s+/).filter(Boolean);
+  const stop = new Set(["a", "an", "the", "of", "in", "on", "at", "with", "and", "shot"]);
+  const picked = words.filter((w) => !stop.has(w.toLowerCase())).slice(0, 3);
+  return picked.map((w) => w[0].toUpperCase() + w.slice(1).toLowerCase()).join(" ") || "Untitled";
+}
 
 const slug = (ar: AspectRatio) => ar.replace(":", "x");
 export const imageSrc = (key: string, ar: AspectRatio) => `/mock/img/${key}-${slug(ar)}.jpg`;
-const videoSrc = (key: string, ar: AspectRatio) => `/mock/vid/${key}-${slug(ar)}.mp4`;
+export const videoSrc = (key: string, ar: AspectRatio) => `/mock/vid/${key}-${slug(ar)}.mp4`;
 
 function mulberry32(seed: number) {
   let a = seed >>> 0;

@@ -30,11 +30,21 @@ export interface Output {
   readyAt: number;
 }
 
+export interface Author {
+  name: string;
+  avatar: string;
+}
+
 /** A "take": one run of a recipe. Status is derived from time, so it survives reloads. */
 export interface Generation {
   id: string;
   n: number; // take number within its project
   projectId: string;
+  title: string;
+  tags: string[];
+  likes: number;
+  author: Author;
+  favorite: boolean;
   recipe: Recipe;
   parentId: string | null;
   createdAt: number;
@@ -51,3 +61,9 @@ export interface Project {
 }
 
 export type TakeStatus = "queued" | "running" | "done";
+
+/** One media card in the grid: a single output of a take. */
+export interface CardItem {
+  g: Generation;
+  o: Output;
+}

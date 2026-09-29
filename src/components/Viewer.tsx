@@ -2,10 +2,10 @@
 
 import { useEffect, useMemo } from "react";
 import { ChevronLeft, ChevronRight, Gem, CornerDownRight, Download, Film, Repeat2, RotateCcw, Shuffle, X } from "lucide-react";
-import { modelById, presetName } from "@/lib/catalog";
+import { modelById, presetOf } from "@/lib/catalog";
+import { outputFilename, timeAgo } from "@/lib/format";
 import { downloadOutput } from "@/lib/image";
 import { useStudio } from "@/store/useStudio";
-import { outputFilename, timeAgo } from "./Feed";
 
 function Row({ label, children }: { label: string; children: React.ReactNode }) {
   return (
@@ -83,7 +83,7 @@ export function Viewer({ now }: { now: number }) {
   );
 
   return (
-    <div className="fade-in fixed inset-0 z-50 flex flex-col bg-black/95 backdrop-blur-sm md:flex-row" role="dialog" aria-modal="true" aria-label={`Take ${g.n}`}>
+    <div className="fade-in fixed inset-0 z-50 flex flex-col bg-black/95 backdrop-blur-sm md:flex-row" role="dialog" aria-modal="true" aria-label={g.title}>
       <div className="relative flex min-h-0 flex-1 items-center justify-center p-3 pt-14 md:p-8" onClick={closeViewer}>
         <button
           onClick={closeViewer}
@@ -107,7 +107,7 @@ export function Viewer({ now }: { now: number }) {
       <aside className="max-h-[48vh] shrink-0 overflow-y-auto border-t border-line bg-surface p-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] md:max-h-none md:w-96 md:border-l md:border-t-0">
         <div className="flex items-center justify-between text-xs text-muted">
           <span>
-            <span className="font-medium text-fg">Take {g.n}</span> · {g.outputs.indexOf(o) + 1} of {g.outputs.length}
+            <span className="font-medium text-fg">{g.title}</span> · #{g.n} · {g.outputs.indexOf(o) + 1} of {g.outputs.length}
           </span>
           <span>{timeAgo(g.createdAt, now)}</span>
         </div>
@@ -135,7 +135,7 @@ export function Viewer({ now }: { now: number }) {
           <Row label="Model">{modelById(r.modelId).name}</Row>
           <Row label="Aspect ratio">{r.aspectRatio}</Row>
           {r.mode === "video" && <Row label="Duration">{r.durationSec}s</Row>}
-          <Row label={r.mode === "image" ? "Style" : "Camera"}>{presetName(r.mode, r.presetId)}</Row>
+          <Row label={r.mode === "image" ? "Style" : "Camera"}>{presetOf(r.mode, r.presetId).name}</Row>
           {r.mode === "image" && <Row label="Batch">×{r.count}</Row>}
           <Row label="Seed">
             <span className="font-mono text-xs">{r.seed}</span>
@@ -162,7 +162,7 @@ export function Viewer({ now }: { now: number }) {
                 className="inline-flex items-center gap-1 text-accent hover:underline"
               >
                 <CornerDownRight className="size-3.5" />
-                Take {parent.n}
+                {parent.title}
               </button>
             </Row>
           )}
