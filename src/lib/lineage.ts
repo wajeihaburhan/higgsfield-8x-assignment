@@ -1,15 +1,20 @@
-import type { Generation } from "./types";
+import type { Generation, Op } from "./types";
+
+const OP_LABEL: Record<Op, string> = { upscale: "Upscale", variations: "Variation", inpaint: "Inpaint", animate: "Animate", remix: "Remix" };
 
 /** Short label for what changed between a take and the take it came from. */
 export function edgeLabel(parent: Generation, child: Generation) {
-  const a = parent.recipe;
-  const b = child.recipe;
-  if (a.mode === "image" && b.mode === "video") return "Animate";
-  if (b.reference?.sourceKey && parent.outputs.some((o) => o.key === b.reference?.sourceKey) && b.prompt !== a.prompt)
-    return "Remix";
-  const changed = (["prompt", "modelId", "aspectRatio", "presetId", "mode"] as const).filter((k) => a[k] !== b[k]);
+  if (child.op) return OP_LABEL[child.op];
+  const a = parent.recipe as unknown as Record<string, unknown>;
+  const b = child.recipe as unknown as Record<string, unknown>;
+  const names: Record<string, string> = {
+    prompt: "Prompt", modelId: "Model", aspectRatio: "Reframe", stylePreset: "Style", sampler: "Sampler", steps: "Steps",
+    cfg: "CFG", resolution: "Resolution", negativePrompt: "Negative", durationSec: "Retime", motion: "Motion",
+    camera: "Camera", fps: "FPS", motionModel: "Vectors", startFrame: "Keyframe", endFrame: "Keyframe",
+  };
+  const changed = Object.keys(names).filter((k) => JSON.stringify(a[k]) !== JSON.stringify(b[k]));
   if (changed.length === 0) return a.seed === b.seed ? "Rerun" : "Vary";
-  if (changed.length === 1) return { prompt: "Prompt", modelId: "Model", aspectRatio: "Reframe", presetId: "Style", mode: "Mode" }[changed[0]];
+  if (changed.length === 1) return names[changed[0]];
   return "Fork";
 }
 

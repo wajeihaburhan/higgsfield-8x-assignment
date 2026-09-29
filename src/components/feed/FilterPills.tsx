@@ -2,8 +2,8 @@
 
 import { LayoutGroup, motion } from "framer-motion";
 import { Heart, Sparkles, X } from "lucide-react";
-import { presetOf } from "@/lib/catalog";
-import type { Generation } from "@/lib/types";
+import { cameraOf, stylePreset } from "@/lib/catalog";
+import type { Generation, Mode } from "@/lib/types";
 import { applyFilters, useStudio } from "@/store/useStudio";
 
 /** Tags suggested by what the user is typing right now (or the preset they picked). */
@@ -13,20 +13,20 @@ function suggestedTags(prompt: string, presetTag: string | null, known: string[]
   return [...new Set([presetTag, ...hits].filter((t): t is string => !!t && known.includes(t)))];
 }
 
-export function FilterPills({ takes }: { takes: Generation[] }) {
+export function FilterPills({ takes, mode }: { takes: Generation[]; mode: Mode }) {
   const activeTags = useStudio((s) => s.activeTags);
   const favoritesOnly = useStudio((s) => s.favoritesOnly);
   const toggleTag = useStudio((s) => s.toggleTag);
   const clearFilters = useStudio((s) => s.clearFilters);
   const setFavoritesOnly = useStudio((s) => s.setFavoritesOnly);
-  const draft = useStudio((s) => s.draft);
+  const draft = useStudio((s) => s.drafts[mode]);
 
   // Counts reflect the current filter, so pills that would empty the feed disappear.
   const visible = applyFilters(takes, activeTags, favoritesOnly);
   const counts = new Map<string, number>();
   for (const g of visible) for (const t of g.tags) counts.set(t, (counts.get(t) ?? 0) + 1);
   const allTags = [...new Set(takes.flatMap((g) => g.tags))];
-  const suggested = suggestedTags(draft.prompt, presetOf(draft.mode, draft.presetId).tag, allTags).filter(
+  const suggested = suggestedTags(draft.prompt, draft.mode === "image" ? stylePreset(draft.stylePreset).tag : cameraOf(draft.camera).tag, allTags).filter(
     (t) => !activeTags.includes(t) && counts.has(t)
   );
   const rest = [...counts.entries()]

@@ -57,7 +57,7 @@ body {
 
 /* Same look for panels that float over content (dock, drawer), kept legible. */
 .glass-strong {
-  background: rgb(15 23 42 / 0.92);
+  background: rgb(15 23 42 / 0.97);
   border: 1px solid rgb(6 182 212 / 0.25);
   backdrop-filter: blur(24px) saturate(140%);
   -webkit-backdrop-filter: blur(24px) saturate(140%);
@@ -116,4 +116,39 @@ body {
 
 @media (prefers-reduced-motion: reduce) {
   .sheen::after, .wave-bar { animation: none; }
+}
+
+/* Range slider: aqua fill up to the value (set --fill as a percentage). */
+.range {
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  border-radius: 999px;
+  background: linear-gradient(to right, var(--accent) 0%, var(--success) var(--fill, 50%), var(--surface-2) var(--fill, 50%));
+  outline: none;
+  cursor: pointer;
+}
+.range::-webkit-slider-thumb {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  background: var(--fg);
+  border: 3px solid var(--accent);
+  box-shadow: 0 0 12px rgb(0 245 255 / 0.6);
+}
+.range::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  background: var(--fg);
+  border: 3px solid var(--accent);
+}
+.range:focus-visible::-webkit-slider-thumb {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.text-glow {
+  text-shadow: 0 0 12px rgb(0 245 255 / 0.75), 0 0 2px rgb(0 245 255 / 0.9);
 }

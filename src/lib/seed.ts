@@ -1,8 +1,41 @@
-import { modelByName } from "./catalog";
+import { costOf, modelById } from "./catalog";
 import { imageSrc, videoSrc } from "./mock";
-import type { AspectRatio, Generation, Mode } from "./types";
+import type { Camera, Fps, Generation, ImageAspect, ImageRecipe, Look, Op, Reference, Resolution, Sampler, StyleRef, VideoAspect, VideoRecipe } from "./types";
 
-/** Feed item schema from the brief. */
+/* ------------------------------------------------------------------ */
+/* Schemas for the two media types                                     */
+/* ------------------------------------------------------------------ */
+
+interface SeedAuthor {
+  name: string;
+  avatar: string;
+}
+
+/** Static image generation, as shown in Image Studio. */
+export interface ImageItem {
+  id: string;
+  title: string;
+  prompt: string;
+  negativePrompt: string;
+  imageUrl: string;
+  model: "Aurora-XL" | "Prism-2" | "Lumen-Turbo";
+  aspectRatio: ImageAspect;
+  resolution: Resolution;
+  sampler: Sampler;
+  steps: number;
+  cfg: number;
+  stylePreset: string;
+  tags: string[];
+  likesCount: number;
+  author: SeedAuthor;
+  createdAt: string;
+  parentId: string | null;
+  op: Op | null;
+  assetKey: string;
+  look?: Look;
+}
+
+/** Video generation, as shown in Video Studio (the brief's VideoItem, plus motion settings). */
 export interface VideoItem {
   id: string;
   title: string;
@@ -10,25 +43,25 @@ export interface VideoItem {
   thumbnailUrl: string;
   videoUrl: string;
   model: "Higgsfield-V2" | "Motion-Pro" | "Cinematic-AI";
-  aspectRatio: "16:9" | "9:16" | "1:1";
+  aspectRatio: VideoAspect;
   duration: string;
   tags: string[];
   likesCount: number;
-  author: {
-    name: string;
-    avatar: string;
-  };
+  author: SeedAuthor;
   createdAt: string;
+  fps: Fps;
+  motion: number;
+  camera: Camera;
+  motionModel: string;
+  /** Image Studio item used as the start keyframe, if any. */
+  startFrameId: string | null;
+  parentId: string | null;
+  assetKey: string;
 }
 
-/** Seed items also carry what the studio needs to reproduce and branch them. */
-interface SeedItem extends VideoItem {
-  kind: Mode;
-  assetKey: string;
-  presetId: string;
-  seed: number;
-  parentId: string | null;
-}
+/* ------------------------------------------------------------------ */
+/* Authors                                                             */
+/* ------------------------------------------------------------------ */
 
 const GRADIENTS = [
   ["#00F5FF", "#10B981"],
@@ -59,165 +92,162 @@ const KENJI = author("Kenji Watanabe");
 const AMA = author("Ama Owusu");
 
 const hoursAgo = (h: number) => new Date(Date.now() - h * 3600_000).toISOString();
+const NEG = "blurry, low detail, watermark, extra limbs";
 
-function item(
-  id: string,
-  kind: Mode,
-  assetKey: string,
-  aspectRatio: AspectRatio,
-  fields: Omit<SeedItem, "id" | "kind" | "assetKey" | "aspectRatio" | "thumbnailUrl" | "videoUrl" | "duration" | "seed" | "createdAt"> & {
-    hours: number;
-    seconds?: number;
-  }
-): SeedItem {
-  const { hours, seconds = 4, ...rest } = fields;
+/* ------------------------------------------------------------------ */
+/* Image Studio seed                                                   */
+/* ------------------------------------------------------------------ */
+
+type ImageSeed = Omit<ImageItem, "imageUrl" | "createdAt" | "negativePrompt" | "sampler" | "steps" | "cfg" | "resolution" | "look" | "op"> &
+  Partial<Pick<ImageItem, "negativePrompt" | "sampler" | "steps" | "cfg" | "resolution" | "look" | "op">> & { hours: number };
+
+function img(s: ImageSeed): ImageItem {
+  const { hours, ...rest } = s;
   return {
-    id,
-    kind,
-    assetKey,
-    aspectRatio,
-    thumbnailUrl: imageSrc(assetKey, aspectRatio),
-    videoUrl: kind === "video" ? videoSrc(assetKey, aspectRatio) : "",
-    duration: kind === "video" ? `0:0${seconds}` : "Still",
-    seed: 100000 + [...id].reduce((h, c) => h * 31 + c.charCodeAt(0), 7) % 800000,
-    createdAt: hoursAgo(hours),
+    negativePrompt: NEG,
+    sampler: "dpmpp-2m-karras",
+    steps: 30,
+    cfg: 7,
+    resolution: "1080p",
+    op: null,
     ...rest,
+    imageUrl: imageSrc(s.assetKey, s.aspectRatio),
+    createdAt: hoursAgo(hours),
   };
 }
 
-// Branching chains, so the graph view has real prompt evolution to show.
-export const SEED_ITEMS: SeedItem[] = [
-  item("s-fjord", "image", "1015", "16:9", {
-    title: "Fjord Sunrise",
-    prompt: "Aerial drone shot over a Norwegian fjord at sunrise, volumetric light, cinematic",
-    model: "Cinematic-AI", presetId: "cinematic", parentId: null, hours: 52,
-    tags: ["Cinematic Lighting", "Landscape", "Aerial"], likesCount: 1284, author: MIRA,
-  }),
-  item("s-fjord-dolly", "video", "1015", "16:9", {
-    title: "Fjord Sunrise — Dolly",
-    prompt: "Aerial drone shot over a Norwegian fjord at sunrise, slow dolly forward over the cliff edge",
-    model: "Motion-Pro", presetId: "push-in", parentId: "s-fjord", hours: 50,
-    tags: ["Dolly In", "Landscape", "Motion"], likesCount: 2210, author: MIRA,
-  }),
-  item("s-valley", "image", "1043", "16:9", {
-    title: "Valley Cathedral",
-    prompt: "Aerial drone shot over a granite valley at sunrise, volumetric light, cinematic",
-    model: "Cinematic-AI", presetId: "cinematic", parentId: "s-fjord", hours: 49,
-    tags: ["Cinematic Lighting", "Landscape", "Nature"], likesCount: 864, author: MIRA,
-  }),
-  item("s-valley-orbit", "video", "1043", "16:9", {
-    title: "Yosemite Morning Orbit",
-    prompt: "Slow orbit around a granite valley at golden hour, river reflections, cinematic",
-    model: "Cinematic-AI", presetId: "orbit", parentId: "s-valley", hours: 30,
-    tags: ["Orbit", "Landscape", "Motion"], likesCount: 1532, author: KENJI,
-  }),
-  item("s-pug", "image", "1025", "1:1", {
-    title: "Pug Burrito",
-    prompt: "Portrait of a pug wrapped in a wool blanket on a forest trail, 35mm film grain",
-    model: "Higgsfield-V2", presetId: "film", parentId: null, hours: 44,
-    tags: ["Film Grain", "Animals", "Portrait"], likesCount: 3120, author: SOFIA,
-  }),
-  item("s-pug-window", "image", "1062", "9:16", {
-    title: "Pug Burrito — Window Light",
-    prompt: "Portrait of a pug wrapped in a blanket on a bed, soft window light, cozy",
-    model: "Higgsfield-V2", presetId: "none", parentId: "s-pug", hours: 40,
-    tags: ["Animals", "Cozy", "Portrait"], likesCount: 1975, author: SOFIA,
-  }),
-  item("s-pug-loop", "video", "1062", "9:16", {
-    title: "Sleepy Pug Loop",
-    prompt: "Portrait of a pug wrapped in a blanket on a bed, gentle handheld breathing motion",
-    model: "Motion-Pro", presetId: "handheld", parentId: "s-pug-window", hours: 38,
-    tags: ["Handheld", "Animals", "Motion"], likesCount: 4406, author: SOFIA,
-  }),
-  item("s-pug-forest", "video", "1025", "16:9", {
-    title: "Forest Trail Pug",
-    prompt: "A pug wrapped in a wool blanket on a forest trail, slow camera pan, 35mm film",
-    model: "Motion-Pro", presetId: "pan", parentId: "s-pug", hours: 20,
-    tags: ["Camera Pan", "Film Grain", "Animals"], likesCount: 740, author: DEV,
-  }),
-  item("s-jelly", "video", "1069", "9:16", {
-    title: "Neon Abyss",
-    prompt: "Macro shot of a jellyfish glowing in deep blue water, neon cyberpunk palette, particles",
-    model: "Cinematic-AI", presetId: "push-in", parentId: null, hours: 36,
-    tags: ["Cyberpunk", "Underwater", "VFX"], likesCount: 5230, author: AMA,
-  }),
-  item("s-jelly-square", "image", "1069", "1:1", {
-    title: "Neon Abyss — Square",
-    prompt: "Macro shot of a jellyfish glowing in deep blue water, neon cyberpunk palette, VFX particles",
-    model: "Cinematic-AI", presetId: "vfx", parentId: "s-jelly", hours: 33,
-    tags: ["VFX", "Cyberpunk", "Underwater"], likesCount: 1811, author: AMA,
-  }),
-  item("s-jelly-drift", "video", "1069", "16:9", {
-    title: "Deep Blue Drift",
-    prompt: "A jellyfish drifting through deep blue water, slow lateral camera pan",
-    model: "Motion-Pro", presetId: "pan", parentId: "s-jelly", hours: 12,
-    tags: ["Camera Pan", "Underwater", "Motion"], likesCount: 962, author: DEV,
-  }),
-  item("s-bear", "image", "433", "1:1", {
-    title: "Grizzly Close-up",
-    prompt: "Close portrait of a grizzly bear, wet fur, cinematic rim lighting",
-    model: "Higgsfield-V2", presetId: "cinematic", parentId: null, hours: 26,
-    tags: ["Cinematic Lighting", "Wildlife", "Portrait"], likesCount: 2688, author: KENJI,
-  }),
-  item("s-bear-push", "video", "433", "16:9", {
-    title: "Grizzly Push-in",
-    prompt: "Close portrait of a grizzly bear, slow dolly in to the eyes, cinematic rim lighting",
-    model: "Motion-Pro", presetId: "push-in", parentId: "s-bear", hours: 24, seconds: 8,
-    tags: ["Dolly In", "Wildlife", "Motion"], likesCount: 3390, author: KENJI,
-  }),
-  item("s-hiker", "image", "1015", "9:16", {
-    title: "Cliffside Hiker",
-    prompt: "A lone hiker on a cliff edge above a fjord at dawn, volumetric light",
-    model: "Higgsfield-V2", presetId: "cinematic", parentId: null, hours: 6,
-    tags: ["Cinematic Lighting", "Landscape"], likesCount: 418, author: DEV,
-  }),
+export const IMAGE_ITEMS: ImageItem[] = [
+  img({ id: "i-fjord", title: "Fjord Sunrise", assetKey: "1015", aspectRatio: "16:9", model: "Aurora-XL", stylePreset: "cinematic", parentId: null, hours: 60,
+    prompt: "Aerial view of a Norwegian fjord at sunrise, volumetric light, cinematic", tags: ["Cinematic Lighting", "Landscape", "Aerial"], likesCount: 1284, author: MIRA }),
+  img({ id: "i-fjord-4k", title: "Fjord Sunrise — 4K", assetKey: "1015", aspectRatio: "16:9", model: "Aurora-XL", stylePreset: "cinematic", parentId: "i-fjord", op: "upscale", resolution: "4K", hours: 58,
+    prompt: "Aerial view of a Norwegian fjord at sunrise, volumetric light, cinematic", tags: ["Upscaled", "4K", "Landscape"], likesCount: 902, author: MIRA }),
+  img({ id: "i-fjord-var", title: "Fjord Sunrise — Variation", assetKey: "1015", aspectRatio: "16:9", model: "Aurora-XL", stylePreset: "cinematic", parentId: "i-fjord", op: "variations", hours: 57,
+    look: { hue: -24, zoom: 1.28, flip: true, ox: 35, oy: 60 },
+    prompt: "Aerial view of a Norwegian fjord at sunrise, volumetric light, cinematic", tags: ["Variation", "Landscape", "Aerial"], likesCount: 311, author: MIRA }),
+  img({ id: "i-valley", title: "Granite Valley", assetKey: "1043", aspectRatio: "4:3", model: "Aurora-XL", stylePreset: "none", parentId: null, hours: 44, sampler: "euler-a", steps: 36,
+    prompt: "Misty granite valley with a quiet river, pine forest, morning light", tags: ["Landscape", "Nature"], likesCount: 764, author: KENJI }),
+  img({ id: "i-pug", title: "Pug Burrito", assetKey: "1025", aspectRatio: "1:1", model: "Prism-2", stylePreset: "film", parentId: null, hours: 40,
+    prompt: "Portrait of a pug wrapped in a wool blanket on a forest trail, 35mm film grain", tags: ["Film Grain", "Animals", "Portrait"], likesCount: 3120, author: SOFIA }),
+  img({ id: "i-pug-inpaint", title: "Pug Burrito — Red Scarf", assetKey: "1025", aspectRatio: "1:1", model: "Prism-2", stylePreset: "film", parentId: "i-pug", op: "inpaint", hours: 38,
+    look: { hue: 14, zoom: 1, flip: false },
+    prompt: "Portrait of a pug wrapped in a wool blanket on a forest trail, 35mm film grain", tags: ["Inpainted", "Animals", "Portrait"], likesCount: 1450, author: SOFIA }),
+  img({ id: "i-pug-bed", title: "Window Light Pug", assetKey: "1062", aspectRatio: "9:16", model: "Prism-2", stylePreset: "none", parentId: null, hours: 30,
+    prompt: "A pug under a blanket on a bed, soft window light, cozy morning", tags: ["Animals", "Cozy", "Portrait"], likesCount: 1975, author: DEV }),
+  img({ id: "i-jelly", title: "Neon Abyss", assetKey: "1069", aspectRatio: "9:16", model: "Aurora-XL", stylePreset: "cyberpunk", parentId: null, hours: 26, cfg: 9,
+    prompt: "Macro shot of a jellyfish glowing in deep blue water, neon cyberpunk palette", tags: ["Cyberpunk", "Underwater", "Macro"], likesCount: 5230, author: AMA }),
+  img({ id: "i-jelly-sq", title: "Neon Abyss — Square", assetKey: "1069", aspectRatio: "1:1", model: "Aurora-XL", stylePreset: "cyberpunk", parentId: "i-jelly", hours: 25, cfg: 9,
+    prompt: "Macro shot of a jellyfish glowing in deep blue water, neon cyberpunk palette", tags: ["Cyberpunk", "Underwater"], likesCount: 1811, author: AMA }),
+  img({ id: "i-bear", title: "Grizzly Close-up", assetKey: "433", aspectRatio: "4:3", model: "Aurora-XL", stylePreset: "cinematic", parentId: null, hours: 18, steps: 40,
+    prompt: "Close portrait of a grizzly bear, wet fur, cinematic rim lighting", tags: ["Cinematic Lighting", "Wildlife", "Portrait"], likesCount: 2688, author: KENJI }),
+  img({ id: "i-bear-studio", title: "Grizzly — Studio", assetKey: "433", aspectRatio: "1:1", model: "Lumen-Turbo", stylePreset: "studio", parentId: "i-bear", hours: 16, steps: 12, sampler: "unipc",
+    prompt: "Close portrait of a grizzly bear, studio backdrop, soft key light", tags: ["Studio Light", "Wildlife", "Portrait"], likesCount: 540, author: DEV }),
+  img({ id: "i-hiker", title: "Cliffside Hiker", assetKey: "1015", aspectRatio: "9:16", model: "Lumen-Turbo", stylePreset: "cinematic", parentId: null, hours: 5, steps: 14, sampler: "unipc",
+    prompt: "A lone hiker on a cliff edge above a fjord at dawn, volumetric light", tags: ["Cinematic Lighting", "Landscape"], likesCount: 418, author: DEV }),
 ];
 
-/** Converts seed items into studio takes so the grid, graph and dock share one model. */
+/* ------------------------------------------------------------------ */
+/* Video Studio seed                                                   */
+/* ------------------------------------------------------------------ */
+
+type VideoSeed = Omit<VideoItem, "thumbnailUrl" | "videoUrl" | "createdAt" | "duration"> & { hours: number; seconds: number };
+
+function vid(s: VideoSeed): VideoItem {
+  const { hours, seconds, ...rest } = s;
+  return {
+    ...rest,
+    thumbnailUrl: imageSrc(s.assetKey, s.aspectRatio),
+    videoUrl: videoSrc(s.assetKey, s.aspectRatio),
+    duration: `0:${String(seconds).padStart(2, "0")}`,
+    createdAt: hoursAgo(hours),
+  };
+}
+
+export const VIDEO_ITEMS: VideoItem[] = [
+  vid({ id: "v-fjord-zoom", title: "Fjord Sunrise — Push", assetKey: "1015", aspectRatio: "16:9", model: "Motion-Pro", seconds: 5, fps: 24, motion: 45, camera: "zoom", motionModel: "vector-s", startFrameId: "i-fjord", parentId: null, hours: 56,
+    prompt: "Slow push forward over the fjord at sunrise, drifting mist", tags: ["Zoom", "Keyframes", "Landscape"], likesCount: 2210, author: MIRA }),
+  vid({ id: "v-fjord-orbit", title: "Fjord Sunrise — Orbit", assetKey: "1015", aspectRatio: "16:9", model: "Cinematic-AI", seconds: 10, fps: 30, motion: 60, camera: "orbit", motionModel: "vector-p", startFrameId: "i-fjord", parentId: "v-fjord-zoom", hours: 50,
+    prompt: "Wide orbit around the fjord cliffs at sunrise, drifting mist", tags: ["Orbit", "Keyframes", "Landscape"], likesCount: 1604, author: MIRA }),
+  vid({ id: "v-valley", title: "Yosemite Morning Tilt", assetKey: "1043", aspectRatio: "16:9", model: "Cinematic-AI", seconds: 10, fps: 24, motion: 30, camera: "tilt", motionModel: "vector-s", startFrameId: null, parentId: null, hours: 34,
+    prompt: "Slow tilt up from a quiet river to granite cliffs at golden hour", tags: ["Tilt", "Landscape", "Nature"], likesCount: 1532, author: KENJI }),
+  vid({ id: "v-pug-loop", title: "Sleepy Pug Loop", assetKey: "1062", aspectRatio: "9:16", model: "Motion-Pro", seconds: 3, fps: 30, motion: 20, camera: "static", motionModel: "vector-p", startFrameId: "i-pug-bed", parentId: null, hours: 28,
+    prompt: "A pug breathing softly under a blanket, gentle handheld motion", tags: ["Keyframes", "Animals", "Cozy"], likesCount: 4406, author: DEV }),
+  vid({ id: "v-pug-pan", title: "Forest Trail Pug", assetKey: "1025", aspectRatio: "16:9", model: "Higgsfield-V2", seconds: 5, fps: 24, motion: 55, camera: "pan", motionModel: "vector-s", startFrameId: "i-pug", parentId: null, hours: 22,
+    prompt: "A pug wrapped in a wool blanket on a forest trail, slow camera pan, 35mm film", tags: ["Camera Pan", "Film Grain", "Animals"], likesCount: 740, author: SOFIA }),
+  vid({ id: "v-jelly", title: "Neon Abyss Drift", assetKey: "1069", aspectRatio: "9:16", model: "Cinematic-AI", seconds: 5, fps: 60, motion: 75, camera: "zoom", motionModel: "vector-x", startFrameId: "i-jelly", parentId: null, hours: 24,
+    prompt: "A jellyfish pulsing through deep blue water, neon glow, particles", tags: ["Zoom", "High Motion", "Cyberpunk"], likesCount: 5230, author: AMA }),
+  vid({ id: "v-jelly-wide", title: "Deep Blue Pan", assetKey: "1069", aspectRatio: "16:9", model: "Motion-Pro", seconds: 5, fps: 30, motion: 50, camera: "pan", motionModel: "vector-s", startFrameId: null, parentId: "v-jelly", hours: 12,
+    prompt: "A jellyfish drifting through deep blue water, slow lateral pan", tags: ["Camera Pan", "Underwater", "Macro"], likesCount: 962, author: AMA }),
+  vid({ id: "v-bear", title: "Grizzly Push-in", assetKey: "433", aspectRatio: "16:9", model: "Motion-Pro", seconds: 5, fps: 24, motion: 40, camera: "zoom", motionModel: "vector-p", startFrameId: "i-bear", parentId: null, hours: 15,
+    prompt: "Close portrait of a grizzly bear, slow dolly in to the eyes, rim light", tags: ["Zoom", "Keyframes", "Wildlife"], likesCount: 3390, author: KENJI }),
+  vid({ id: "v-bear-square", title: "Grizzly — Square Cut", assetKey: "433", aspectRatio: "1:1", model: "Higgsfield-V2", seconds: 3, fps: 60, motion: 80, camera: "orbit", motionModel: "vector-x", startFrameId: "i-bear", parentId: "v-bear", hours: 8,
+    prompt: "Grizzly bear portrait, fast orbit, dramatic rim light", tags: ["Orbit", "High Motion", "60fps"], likesCount: 688, author: KENJI }),
+];
+
+/* ------------------------------------------------------------------ */
+/* Conversion into studio takes                                        */
+/* ------------------------------------------------------------------ */
+
+const seedOf = (id: string) => 100000 + ([...id].reduce((h, c) => h * 31 + c.charCodeAt(0), 7) % 800000);
+const byName = (name: string) => modelById(name.toLowerCase());
+const refTo = (i: ImageItem): Reference => ({ src: i.imageUrl, name: i.title, sourceKey: i.assetKey });
+
+function number<T extends { createdAt: number }>(takes: T[]) {
+  return [...takes].sort((a, b) => a.createdAt - b.createdAt).map((t, i) => ({ ...t, n: i + 1 }));
+}
+
 export function seedGenerations(projectId: string): Generation[] {
-  const byAge = [...SEED_ITEMS].sort((a, b) => a.createdAt.localeCompare(b.createdAt));
-  return byAge
-    .map((s, i): Generation => {
-      const model = modelByName(s.model);
-      const t = Date.parse(s.createdAt);
-      const seconds = s.kind === "video" ? Number(s.duration.split(":")[1]) : 4;
-      const parent = SEED_ITEMS.find((p) => p.id === s.parentId);
-      return {
-        id: s.id,
-        n: i + 1,
-        projectId,
-        title: s.title,
-        tags: s.tags,
-        likes: s.likesCount,
-        author: s.author,
-        favorite: false,
-        recipe: {
-          mode: s.kind,
-          prompt: s.prompt,
-          modelId: model.id,
-          aspectRatio: s.aspectRatio,
-          count: 1,
-          durationSec: seconds,
-          presetId: s.presetId,
-          seed: s.seed,
-          reference: parent ? { src: parent.thumbnailUrl, name: parent.title, sourceKey: parent.assetKey } : null,
-        },
-        parentId: s.parentId,
-        createdAt: t,
-        startAt: t - (s.kind === "video" ? 7000 : 3500) - (s.seed % 5000),
-        endAt: t,
-        outputs: [
-          {
-            id: `${s.id}-o`,
-            kind: s.kind,
-            key: s.assetKey,
-            src: s.kind === "video" ? s.videoUrl : s.thumbnailUrl,
-            poster: s.thumbnailUrl,
-            readyAt: t,
-          },
-        ],
-        cost: s.kind === "image" ? model.imageCost : model.videoCost * seconds,
-      };
-    })
-    .reverse();
+  const images = IMAGE_ITEMS.map((s): Generation => {
+    const parent = IMAGE_ITEMS.find((p) => p.id === s.parentId);
+    const styleRefs: StyleRef[] = parent && s.op ? [{ ...refTo(parent), role: "style", weight: 0.8 }] : [];
+    const recipe: ImageRecipe = {
+      mode: "image",
+      prompt: s.prompt,
+      modelId: byName(s.model).id,
+      aspectRatio: s.aspectRatio,
+      seed: seedOf(s.id),
+      negativePrompt: s.negativePrompt,
+      sampler: s.sampler,
+      steps: s.steps,
+      cfg: s.cfg,
+      resolution: s.resolution,
+      count: 1,
+      stylePreset: s.stylePreset,
+      styleRefs,
+      ...(s.op === "inpaint" ? { inpaint: { x: 0.3, y: 0.45, w: 0.4, h: 0.3, prompt: "a red knitted scarf" } } : {}),
+    };
+    const t = Date.parse(s.createdAt);
+    return {
+      id: s.id, n: 0, projectId, title: s.title, tags: s.tags, likes: s.likesCount, author: s.author, favorite: false,
+      recipe, op: s.op, parentId: s.parentId, createdAt: t, startAt: t - 3000 - (recipe.seed % 5000), endAt: t,
+      outputs: [{ id: `${s.id}-o`, kind: "image", key: s.assetKey, src: s.imageUrl, poster: s.imageUrl, readyAt: t, look: s.look }],
+      cost: costOf(recipe, s.op),
+    };
+  });
+
+  const videos = VIDEO_ITEMS.map((s): Generation => {
+    const start = IMAGE_ITEMS.find((i) => i.id === s.startFrameId);
+    const recipe: VideoRecipe = {
+      mode: "video",
+      prompt: s.prompt,
+      modelId: byName(s.model).id,
+      aspectRatio: s.aspectRatio,
+      seed: seedOf(s.id),
+      durationSec: Number(s.duration.split(":")[1]),
+      motion: s.motion,
+      camera: s.camera,
+      fps: s.fps,
+      motionModel: s.motionModel,
+      startFrame: start ? refTo(start) : null,
+      endFrame: null,
+    };
+    const t = Date.parse(s.createdAt);
+    return {
+      id: s.id, n: 0, projectId, title: s.title, tags: s.tags, likes: s.likesCount, author: s.author, favorite: false,
+      recipe, op: start && !s.parentId ? "animate" : null, parentId: s.parentId, createdAt: t, startAt: t - 7000 - (recipe.seed % 6000), endAt: t,
+      outputs: [{ id: `${s.id}-o`, kind: "video", key: s.assetKey, src: s.videoUrl, poster: s.thumbnailUrl, readyAt: t }],
+      cost: costOf(recipe),
+    };
+  });
+
+  return [...number(images), ...number(videos)].sort((a, b) => b.createdAt - a.createdAt);
 }

@@ -1,5 +1,5 @@
-import { Studio } from "@/components/Studio";
+import { redirect } from "next/navigation";
 
 export default function Home() {
-  return <Studio />;
+  redirect("/image");
 }
