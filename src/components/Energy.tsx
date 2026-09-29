@@ -15,7 +15,7 @@ export function EnergyWave({ energy, bars = 28, className = "h-8" }: { energy: n
         return (
           <span
             key={i}
-            className="wave-bar h-full flex-1 rounded-full bg-accent"
+            className="wave-bar h-full flex-1 rounded-full bg-gradient-to-t from-success to-accent"
             style={
               {
                 "--hi": hi,
@@ -46,11 +46,14 @@ export function TokenUsage({ credits, inFlight, draftCost, energy }: { credits: 
       </div>
       <EnergyWave energy={energy} className="h-7" />
       <div className="relative flex h-1.5 overflow-hidden rounded-full bg-surface-2">
-        <div className="h-full animate-pulse bg-accent" style={{ width: pct(inFlight) }} />
+        <div className="h-full animate-pulse bg-success" style={{ width: pct(inFlight) }} />
         <div className="h-full bg-accent/25" style={{ width: pct(Math.min(draftCost, credits)) }} />
       </div>
       <div className="flex justify-between font-mono text-[10px] text-faint">
-        <span>{inFlight > 0 ? `${inFlight} in flight` : "idle"}</span>
+        <span className={inFlight > 0 ? "flex items-center gap-1 text-success" : ""}>
+          {inFlight > 0 && <span className="size-1.5 animate-pulse rounded-full bg-success" />}
+          {inFlight > 0 ? `${inFlight} in flight` : "idle"}
+        </span>
         <span>next −{draftCost}</span>
       </div>
     </div>
@@ -73,7 +76,7 @@ export function PromptHeat({ prompt }: { prompt: string }) {
   if (words.length === 0) return null;
   const weights = words.map(weight);
   const strength = Math.min(100, Math.round((weights.reduce((a, b) => a + b, 0) / 18) * 100));
-  const bg = ["transparent", "rgb(200 255 0 / 0.08)", "rgb(200 255 0 / 0.2)", "rgb(200 255 0 / 0.38)"];
+  const bg = ["transparent", "rgb(0 245 255 / 0.07)", "rgb(0 245 255 / 0.16)", "rgb(0 245 255 / 0.3)"];
   return (
     <div className="flex items-start gap-3">
       <div className="no-scrollbar flex min-w-0 flex-1 flex-wrap gap-1">

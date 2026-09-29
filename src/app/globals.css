@@ -1,17 +1,19 @@
 @import "tailwindcss";
 
 :root {
-  --bg: #09090b;
-  --surface: #111217;
-  --surface-2: #1a1b22;
-  --line: rgb(255 255 255 / 0.08);
-  --line-strong: rgb(255 255 255 / 0.14);
-  --fg: #f4f4f5;
-  --muted: #a1a1aa;
-  --faint: #6b6b76;
-  --accent: #c8ff00;
-  --accent-strong: #b3e600;
-  --accent-fg: #0b0f17;
+  --bg: #0b132b;
+  --surface: #0f172a;
+  --surface-2: #16213d;
+  --line: rgb(6 182 212 / 0.12);
+  --line-strong: rgb(6 182 212 / 0.24);
+  --fg: #f1f5f9;
+  --muted: #94a3b8;
+  --faint: #64748b;
+  --accent: #00f5ff;
+  --accent-strong: #06b6d4;
+  --accent-fg: #0b132b;
+  --success: #10b981;
+  --success-bright: #22c55e;
 }
 
 @theme inline {
@@ -26,6 +28,8 @@
   --color-accent: var(--accent);
   --color-accent-strong: var(--accent-strong);
   --color-accent-fg: var(--accent-fg);
+  --color-success: var(--success);
+  --color-success-bright: var(--success-bright);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
@@ -36,23 +40,47 @@ html {
 
 body {
   background:
-    radial-gradient(1200px 600px at 70% -10%, rgb(200 255 0 / 0.06), transparent 60%),
-    radial-gradient(900px 500px at -10% 110%, rgb(0 194 168 / 0.05), transparent 60%),
+    radial-gradient(1200px 600px at 75% -10%, rgb(0 245 255 / 0.09), transparent 60%),
+    radial-gradient(900px 500px at -10% 110%, rgb(16 185 129 / 0.07), transparent 60%),
     var(--bg);
   background-attachment: fixed;
   color: var(--fg);
 }
 
-/* Frosted glass panel. */
+/* Translucent slate panel (bg-slate-900/60 backdrop-blur-xl border-cyan-500/20). */
 .glass {
-  background: rgb(17 18 23 / 0.86);
-  border: 1px solid var(--line);
-  backdrop-filter: blur(16px) saturate(140%);
-  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  background: rgb(15 23 42 / 0.6);
+  border: 1px solid rgb(6 182 212 / 0.2);
+  backdrop-filter: blur(24px) saturate(140%);
+  -webkit-backdrop-filter: blur(24px) saturate(140%);
+}
+
+/* Same look for panels that float over content (dock, drawer), kept legible. */
+.glass-strong {
+  background: rgb(15 23 42 / 0.92);
+  border: 1px solid rgb(6 182 212 / 0.25);
+  backdrop-filter: blur(24px) saturate(140%);
+  -webkit-backdrop-filter: blur(24px) saturate(140%);
 }
 
 .glow-accent {
-  box-shadow: 0 0 0 1px rgb(200 255 0 / 0.5), 0 0 24px -4px rgb(200 255 0 / 0.45);
+  box-shadow: 0 0 0 1px rgb(0 245 255 / 0.55), 0 0 28px -4px rgb(0 245 255 / 0.45);
+}
+
+/* Primary action: aqua with a subtle shift into green. */
+.btn-primary {
+  background-image: linear-gradient(135deg, #00f5ff 0%, #06b6d4 62%, #10b981 130%);
+  color: var(--accent-fg);
+  box-shadow: 0 0 28px -6px rgb(0 245 255 / 0.65);
+}
+.btn-primary:hover:not(:disabled) {
+  filter: brightness(1.08);
+}
+.btn-primary:disabled {
+  background-image: none;
+  background-color: var(--surface-2);
+  color: var(--faint);
+  box-shadow: none;
 }
 
 /* Moving sheen on in-progress tiles. */

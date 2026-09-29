@@ -31,11 +31,11 @@ interface SeedItem extends VideoItem {
 }
 
 const GRADIENTS = [
-  ["#C8FF00", "#00C2A8"],
-  ["#FF6B6B", "#FFB86B"],
-  ["#7C68FF", "#00B7FF"],
-  ["#FF5FD2", "#7C68FF"],
-  ["#00E0A4", "#C8FF00"],
+  ["#00F5FF", "#10B981"],
+  ["#38BDF8", "#6366F1"],
+  ["#22C55E", "#06B6D4"],
+  ["#A78BFA", "#00F5FF"],
+  ["#F472B6", "#38BDF8"],
 ];
 
 /** Initials avatar as an inline SVG, so the demo has no external image dependency. */
@@ -47,7 +47,7 @@ export function avatarFor(name: string) {
     .slice(0, 2)
     .toUpperCase();
   const [a, b] = GRADIENTS[[...name].reduce((h, c) => h + c.charCodeAt(0), 0) % GRADIENTS.length];
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${a}"/><stop offset="1" stop-color="${b}"/></linearGradient></defs><rect width="64" height="64" rx="32" fill="url(#g)"/><text x="32" y="40" font-family="system-ui,sans-serif" font-size="24" font-weight="700" text-anchor="middle" fill="#0B0F17">${initials}</text></svg>`;
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${a}"/><stop offset="1" stop-color="${b}"/></linearGradient></defs><rect width="64" height="64" rx="32" fill="url(#g)"/><text x="32" y="40" font-family="system-ui,sans-serif" font-size="24" font-weight="700" text-anchor="middle" fill="#0B132B">${initials}</text></svg>`;
   return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
 }
 

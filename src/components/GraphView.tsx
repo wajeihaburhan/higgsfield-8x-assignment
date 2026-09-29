@@ -129,7 +129,7 @@ export function GraphView({ takes, matching, now }: { takes: Generation[]; match
                   <motion.path
                     d={`M${x1},${y1} C${mx},${y1} ${mx},${y2} ${x2},${y2}`}
                     fill="none"
-                    stroke={active ? "#c8ff00" : "rgb(255 255 255 / 0.22)"}
+                    stroke={active ? "#00f5ff" : "rgb(148 163 184 / 0.3)"}
                     strokeWidth={active ? 2 : 1.5}
                     strokeDasharray={g.recipe.mode === "video" ? "0" : "5 5"}
                     initial={{ pathLength: 0 }}
@@ -169,7 +169,7 @@ export function GraphView({ takes, matching, now }: { takes: Generation[]; match
                     <img data-node={g.id} src={o.poster} alt={g.title} draggable={false} className="size-full object-cover" />
                   ) : (
                     <div data-node={g.id} className="sheen absolute inset-0 grid place-items-center">
-                      <span className="font-mono text-lg text-accent">{Math.floor(progressOf(g.startAt, g.endAt, now) * 100)}%</span>
+                      <span className="font-mono text-lg text-success">{Math.floor(progressOf(g.startAt, g.endAt, now) * 100)}%</span>
                     </div>
                   )}
                   <span className="absolute left-1.5 top-1.5 flex items-center gap-1 rounded bg-black/60 px-1.5 py-px font-mono text-[10px] text-white">

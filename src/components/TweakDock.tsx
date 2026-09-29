@@ -23,7 +23,7 @@ function JsonView({ value, base }: { value: Recipe; base: Recipe }) {
   const shown = displayRecipe(value) as Record<string, unknown>;
   const original = displayRecipe(base) as Record<string, unknown>;
   const fmt = (v: unknown) => JSON.stringify(v, null, 2).replace(/\n/g, "\n  ");
-  const color = (v: unknown) => (typeof v === "number" ? "text-sky-300" : typeof v === "string" ? "text-amber-200" : v === null ? "text-faint" : "text-fg");
+  const color = (v: unknown) => (typeof v === "number" ? "text-emerald-300" : typeof v === "string" ? "text-cyan-100" : v === null ? "text-faint" : "text-fg");
   return (
     <pre className="no-scrollbar h-full overflow-auto rounded-xl border border-line bg-black/40 p-3 font-mono text-[11.5px] leading-relaxed">
       <span className="text-faint">{"{"}</span>
@@ -145,7 +145,7 @@ function DockBody({ g, o }: { g: Generation; o: Output }) {
               whileTap={{ scale: 0.96 }}
               onClick={run}
               disabled={cost > credits || !recipe.prompt.trim()}
-              className="flex h-10 items-center gap-2 rounded-xl bg-accent px-4 text-sm font-semibold text-accent-fg shadow-[0_0_24px_-6px_rgb(200_255_0/0.6)] hover:bg-accent-strong disabled:bg-surface-2 disabled:text-faint disabled:shadow-none"
+              className="flex h-10 items-center gap-2 rounded-xl btn-primary px-4 text-sm font-semibold"
             >
               <Sparkles className="size-4" />
               {dirty ? "Remix with changes" : "Remix now"}
@@ -206,7 +206,7 @@ export function TweakDock({ now }: { now: number }) {
           initial={{ y: 40, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ type: "spring", stiffness: 420, damping: 36 }}
-          className="pointer-events-auto mx-auto max-w-5xl overflow-hidden rounded-2xl border border-line-strong bg-[#0e0f14]/95 backdrop-blur-xl shadow-[0_-12px_60px_-12px_rgb(0_0_0/0.8)]"
+          className="pointer-events-auto mx-auto max-w-5xl overflow-hidden rounded-2xl glass-strong shadow-[0_-12px_60px_-12px_rgb(0_0_0/0.8)]"
           role="dialog"
           aria-label={`Tweak ${g.title}`}
         >

@@ -7,9 +7,8 @@ export function edgeLabel(parent: Generation, child: Generation) {
   if (a.mode === "image" && b.mode === "video") return "Animate";
   if (b.reference?.sourceKey && parent.outputs.some((o) => o.key === b.reference?.sourceKey) && b.prompt !== a.prompt)
     return "Remix";
-  if (a.seed === b.seed) return "Rerun";
   const changed = (["prompt", "modelId", "aspectRatio", "presetId", "mode"] as const).filter((k) => a[k] !== b[k]);
-  if (changed.length === 0) return "Vary";
+  if (changed.length === 0) return a.seed === b.seed ? "Rerun" : "Vary";
   if (changed.length === 1) return { prompt: "Prompt", modelId: "Model", aspectRatio: "Reframe", presetId: "Style", mode: "Mode" }[changed[0]];
   return "Fork";
 }

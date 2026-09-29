@@ -19,6 +19,12 @@ The first load includes a **Showcase** project with 14 seeded takes arranged in 
 
 ## Tour
 
+### Theme
+Dark Aqua:
+- **Base:** deep slate background (`#0B132B`), with translucent slate panels (`slate-900/60`, `backdrop-blur-xl`, `cyan-500/20` borders).
+- **Aqua (`#00F5FF`):** primary actions, active navigation and glowing selection borders.
+- **Green (`#10B981`):** used sparingly for rendering progress, the in-flight credit meter, finished-take badges, and the subtle aqua-to-green gradients.
+
 ### Layout
 - **Floating command sidebar:** a glass panel you can collapse to an icon rail. It holds:
   - Models, Projects (switch or create) and Style/Camera presets;
@@ -71,7 +77,7 @@ The first load includes a **Showcase** project with 14 seeded takes arranged in 
 
 ```
 src/
-  app/            layout, theme tokens (dark #09090B, lime #C8FF00, glass), the page
+  app/            layout, Dark Aqua theme tokens (slate #0B132B, aqua #00F5FF, green #10B981, glass), the page
   components/
     Studio        page shell: sidebar or drawer, hero, toolbar, grid or graph, dock, viewer
     Sidebar       floating collapsible command bar

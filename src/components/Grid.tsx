@@ -94,11 +94,11 @@ function MediaCard({ item, now, selected }: { item: CardItem; now: number; selec
             <div className="absolute inset-0 grid place-items-center text-center">
               <div>
                 <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-faint">{status === "queued" ? "In queue" : "Rendering"}</div>
-                {status !== "queued" && <div className="mt-1 font-mono text-2xl font-light tabular-nums text-accent">{Math.floor(p * 100)}%</div>}
+                {status !== "queued" && <div className="mt-1 font-mono text-2xl font-light tabular-nums text-success">{Math.floor(p * 100)}%</div>}
               </div>
             </div>
             <div className="absolute inset-x-0 bottom-0 h-0.5 bg-line">
-              <div className="h-full bg-accent shadow-[0_0_12px_rgb(200_255_0/0.8)]" style={{ width: `${p * 100}%` }} />
+              <div className="h-full bg-gradient-to-r from-accent to-success shadow-[0_0_12px_rgb(16_185_129/0.8)]" style={{ width: `${p * 100}%` }} />
             </div>
           </div>
         )}
@@ -168,7 +168,7 @@ function MediaCard({ item, now, selected }: { item: CardItem; now: number; selec
         </div>
         <div className="flex flex-wrap gap-1">
           <span className="rounded border border-accent/30 bg-accent/10 px-1.5 py-px font-mono text-[10px] text-accent">{modelById(r.modelId).name}</span>
-          <span className="rounded border border-line px-1.5 py-px font-mono text-[10px] text-muted" title="Generation time">
+          <span className={`rounded border px-1.5 py-px font-mono text-[10px] ${status === "done" ? "border-success/30 bg-success/10 text-success" : "border-line text-muted"}`} title="Generation time">
             ⚡ {status === "done" ? genTime(g) : "…"}
           </span>
           {g.tags.slice(0, 3).map((t) => (

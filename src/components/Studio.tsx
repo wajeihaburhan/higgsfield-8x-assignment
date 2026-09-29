@@ -133,7 +133,8 @@ export function Studio() {
               <h1 className="mt-1 text-2xl font-semibold tracking-tight sm:text-3xl">Direct your next shot</h1>
             </div>
             <div className="hidden text-right font-mono text-[11px] text-faint sm:block">
-              {takes.length} takes · {running.length} rendering
+              {takes.length} takes ·{" "}
+              <span className={running.length ? "text-success" : ""}>{running.length} rendering</span>
             </div>
           </div>
 

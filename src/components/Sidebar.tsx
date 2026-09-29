@@ -79,7 +79,7 @@ export function Sidebar({ energy, inFlight, draftCost, onNavigate }: Props) {
     <motion.nav
       animate={{ width: collapsed ? 72 : 256 }}
       transition={{ type: "spring", stiffness: 400, damping: 36 }}
-      className="glass flex h-full flex-col overflow-hidden rounded-2xl shadow-2xl shadow-black/40"
+      className={`${onNavigate ? "glass-strong" : "glass"} flex h-full flex-col overflow-hidden rounded-2xl shadow-2xl shadow-black/40`}
       aria-label="Studio"
     >
       <div className={`flex h-14 shrink-0 items-center gap-2 px-4 ${collapsed ? "justify-center px-0" : ""}`}>

@@ -280,7 +280,7 @@ export function Composer() {
             onClick={() => canSubmit && submit()}
             disabled={!canSubmit}
             title={!canAfford ? "Not enough credits" : "Generate (⌘ + Enter)"}
-            className="flex h-10 shrink-0 items-center gap-2 rounded-xl bg-accent pl-3.5 pr-3 text-sm font-semibold text-accent-fg shadow-[0_0_24px_-6px_rgb(200_255_0/0.6)] transition hover:bg-accent-strong disabled:cursor-not-allowed disabled:bg-surface-2 disabled:text-faint disabled:shadow-none"
+            className="flex h-10 shrink-0 items-center gap-2 rounded-xl btn-primary pl-3.5 pr-3 text-sm font-semibold transition disabled:cursor-not-allowed"
           >
             <Sparkles className="size-4" />
             <span className="hidden sm:inline">{canAfford ? "Generate" : "Need credits"}</span>
