@@ -127,7 +127,7 @@ export function ProfileDrawer({ mode, energy, inFlight }: { mode: Mode; energy: 
             <div className="border-t border-line p-5">
               <button
                 onClick={() => {
-                  if (window.confirm("Reset all demo data? Your takes, projects and credits will be restored to the showcase.")) resetDemo();
+                  if (window.confirm("Reset all demo data? Your takes, projects and credits will be restored to the sample project.")) resetDemo();
                 }}
                 className="flex items-center gap-2 text-xs text-faint hover:text-red-300"
               >

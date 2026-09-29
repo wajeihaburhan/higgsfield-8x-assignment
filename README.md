@@ -1,6 +1,6 @@
 # Takes — AI Image & Video Studio
 
-A front-end MVP of an AI media-generation product with two specialized screens, **Image Studio** and **Video Studio**, sharing one iteration-first workflow. It's inspired by the Higgsfield create flow; generation is simulated locally.
+A front-end MVP of an AI media-generation product with a **Showcase** dashboard and two specialized creation screens, **Image Studio** and **Video Studio**, sharing one iteration-first workflow. It's inspired by the Higgsfield create flow; generation is simulated locally.
 
 **The idea:** every result is a *take* that keeps its complete, typed recipe. Any take can be inspected as JSON, tweaked and remixed in one click, sent across studios (a still becomes a video's start frame, a video frame becomes an image reference), and seen as a graph of how the prompts evolved.
 
@@ -10,20 +10,30 @@ Requires Node 20+.
 
 ```bash
 npm install
-npm run dev        # http://localhost:3000 (redirects to /image)
+npm run dev        # http://localhost:3000 (redirects to /showcase)
 ```
 
 Production build: `npm run build && npm start`.
 
-The first load includes a **Showcase** project: 12 seeded images and 9 seeded videos arranged in branching chains. All state is saved in localStorage. Use **Profile → Reset demo data** to start over.
+The first load includes a **Sample project**: 12 seeded images and 9 seeded videos arranged in branching chains. All state is saved in localStorage. Use **Profile → Reset demo data** to start over.
 
 ## Screens
 
-### Persistent header (both screens)
-- Tabs **Image Studio | Video Studio**. They're real routes (`/image`, `/video`), and the active tab slides between them. Each tab shows a green badge counting its takes in progress.
+### Persistent header (all screens)
+- Tabs **Showcase | Image Studio | Video Studio**. They're real routes (`/showcase`, `/image`, `/video`), and the active tab slides between them. Each tab shows a green badge counting its takes in progress.
 - A **⌘K** button that jumps to the prompt.
 - The **credit counter** in glowing aqua text, with a small activity wave.
 - A **profile drawer** with the account, the credit meter (in flight / next cost), top-up, per-project stats, projects (switch or create) and a demo reset.
+
+### Showcase dashboard (`/showcase`)
+- The landing screen for the active project.
+- **Summary tiles:** images, videos, rendering now, favorites. Plus **New image** / **New video** shortcuts.
+- **All images first, then all videos**, each in its own masonry section with a count and a link to its studio.
+- **Toolbar:**
+  - the smart filter pills apply to both sections;
+  - **Images** / **Videos** buttons jump to each section.
+- Cards keep their full actions (Upscale / Variations / Inpaint, Extract frame, the remix drawer).
+- The full-screen viewer steps through all images, then all videos.
 
 ### Image Studio (`/image`)
 - **Models:** Aurora-XL (photoreal), Prism-2 (stylized), Lumen-Turbo (fast drafts).
@@ -99,13 +109,14 @@ App Router route group:
 
 ```
 src/app/
-  page.tsx                  redirect("/") -> /image
+  page.tsx                  redirect("/") -> /showcase
   (studio)/layout.tsx       <StudioShell>: header, drawer, remix dock, viewer, inpaint, toasts
+  (studio)/showcase/page.tsx <ShowcaseScreen/>: dashboard, images section then videos section
   (studio)/image/page.tsx   <StudioScreen mode="image" composer={<ImageComposer/>} />
   (studio)/video/page.tsx   <StudioScreen mode="video" composer={<VideoComposer/>} />
 ```
 
-- The shell reads the mode from `usePathname()`, so the header, dock and viewer stay mounted across tab switches.
+- The shell reads the screen (`showcase | image | video`) from `usePathname()`, so the header, dock and viewer stay mounted across tab switches.
 - Each studio keeps its own draft (`drafts.image` and `drafts.video` in the store), so switching tabs never loses work.
 - Actions that move across studios (Animate, "Send to Image Studio") write into the other studio's draft, then `router.push()` there.
 
@@ -114,7 +125,7 @@ src/app/
 ```
 src/components/
   shell/    StudioShell (clock context, keyboard), Header (tabs, credits, profile), ProfileDrawer, Toast
-  studio/   StudioScreen (shared layout), PromptBox, ImageComposer, VideoComposer
+  studio/   ShowcaseScreen (dashboard), StudioScreen (shared studio layout), PromptBox, ImageComposer, VideoComposer
   feed/     Grid (masonry + media cards with per-mode actions), GraphView, FilterPills
   dock/     TweakDock (remix drawer + FrameStrip), InpaintDialog, Viewer
   ui/       controls (Segmented, Slider, ChipSelect, AspectPicker, RefSlot, ModelBar, Label), Energy

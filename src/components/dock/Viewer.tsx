@@ -7,7 +7,7 @@ import { cameraOf, modelById, motionModelName, samplerName, stylePreset } from "
 import { outputFilename, timeAgo } from "@/lib/format";
 import { downloadOutput } from "@/lib/image";
 import { lookStyle } from "@/lib/mock";
-import type { Mode } from "@/lib/types";
+import type { Screen } from "@/lib/types";
 import { useStudio } from "@/store/useStudio";
 
 function Row({ label, children }: { label: string; children: React.ReactNode }) {
@@ -19,7 +19,7 @@ function Row({ label, children }: { label: string; children: React.ReactNode }) 
   );
 }
 
-export function Viewer({ now, mode }: { now: number; mode: Mode }) {
+export function Viewer({ now, screen }: { now: number; screen: Screen }) {
   const viewer = useStudio((s) => s.viewer);
   const generations = useStudio((s) => s.generations);
   const activeProjectId = useStudio((s) => s.activeProjectId);
@@ -27,14 +27,12 @@ export function Viewer({ now, mode }: { now: number; mode: Mode }) {
   const { closeViewer, openViewer, reuseRecipe, vary, upscale, variations, openInpaint, animate } = useStudio.getState();
   const router = useRouter();
 
-  // Every finished output in this studio and project, newest first, for prev/next.
-  const items = useMemo(
-    () =>
-      generations
-        .filter((g) => g.projectId === activeProjectId && g.recipe.mode === mode)
-        .flatMap((g) => g.outputs.filter((o) => now >= o.readyAt).map((o) => ({ g, o }))),
-    [generations, activeProjectId, mode, now]
-  );
+  // Every finished output on this screen, in the order it's shown (Showcase: images, then videos), for prev/next.
+  const items = useMemo(() => {
+    const takes = generations.filter((g) => g.projectId === activeProjectId && (screen === "showcase" || g.recipe.mode === screen));
+    const ordered = screen === "showcase" ? [...takes.filter((g) => g.recipe.mode === "image"), ...takes.filter((g) => g.recipe.mode === "video")] : takes;
+    return ordered.flatMap((g) => g.outputs.filter((o) => now >= o.readyAt).map((o) => ({ g, o })));
+  }, [generations, activeProjectId, screen, now]);
   const index = viewer ? items.findIndex((i) => i.o.id === viewer.outputId) : -1;
   const current = index >= 0 ? items[index] : null;
 

@@ -13,20 +13,22 @@ function suggestedTags(prompt: string, presetTag: string | null, known: string[]
   return [...new Set([presetTag, ...hits].filter((t): t is string => !!t && known.includes(t)))];
 }
 
-export function FilterPills({ takes, mode }: { takes: Generation[]; mode: Mode }) {
+/** `mode` enables suggestions from that studio's draft; the Showcase passes none. */
+export function FilterPills({ takes, mode }: { takes: Generation[]; mode?: Mode }) {
   const activeTags = useStudio((s) => s.activeTags);
   const favoritesOnly = useStudio((s) => s.favoritesOnly);
   const toggleTag = useStudio((s) => s.toggleTag);
   const clearFilters = useStudio((s) => s.clearFilters);
   const setFavoritesOnly = useStudio((s) => s.setFavoritesOnly);
-  const draft = useStudio((s) => s.drafts[mode]);
+  const draft = useStudio((s) => (mode ? s.drafts[mode] : null));
 
   // Counts reflect the current filter, so pills that would empty the feed disappear.
   const visible = applyFilters(takes, activeTags, favoritesOnly);
   const counts = new Map<string, number>();
   for (const g of visible) for (const t of g.tags) counts.set(t, (counts.get(t) ?? 0) + 1);
   const allTags = [...new Set(takes.flatMap((g) => g.tags))];
-  const suggested = suggestedTags(draft.prompt, draft.mode === "image" ? stylePreset(draft.stylePreset).tag : cameraOf(draft.camera).tag, allTags).filter(
+  const presetTag = !draft ? null : draft.mode === "image" ? stylePreset(draft.stylePreset).tag : cameraOf(draft.camera).tag;
+  const suggested = (draft ? suggestedTags(draft.prompt, presetTag, allTags) : []).filter(
     (t) => !activeTags.includes(t) && counts.has(t)
   );
   const rest = [...counts.entries()]

@@ -9,7 +9,7 @@ import type { Generation, ImageRecipe, InpaintMask, Mode, Op, Output, Project, R
 
 const uid = () => Math.random().toString(36).slice(2, 10);
 
-const SHOWCASE: Project = { id: "showcase", name: "Showcase", createdAt: 0 };
+const SAMPLE_PROJECT: Project = { id: "sample", name: "Sample project", createdAt: 0 };
 export const YOU = { name: "Demo Creator", avatar: avatarFor("Demo Creator") };
 
 export type ViewMode = "grid" | "graph";
@@ -114,9 +114,9 @@ const safeStorage: StateStorage = {
 export const refFromOutput = (g: Generation, o: Output): Reference => ({ src: o.poster, name: g.title, sourceKey: o.key });
 
 const initialData = () => ({
-  projects: [SHOWCASE],
-  activeProjectId: SHOWCASE.id,
-  generations: seedGenerations(SHOWCASE.id),
+  projects: [SAMPLE_PROJECT],
+  activeProjectId: SAMPLE_PROJECT.id,
+  generations: seedGenerations(SAMPLE_PROJECT.id),
   credits: STARTING_CREDITS,
   drafts: { image: defaultImageRecipe(), video: defaultVideoRecipe() },
   draftParents: { image: null, video: null },
@@ -296,7 +296,7 @@ export const useStudio = create<StudioState>()(
       };
     },
     {
-      name: "takes-studio-v3",
+      name: "takes-studio-v4",
       storage: createJSONStorage(() => safeStorage),
       partialize: ({ projects, activeProjectId, generations, credits, drafts, draftParents, seedLocked, view }) => ({
         projects,

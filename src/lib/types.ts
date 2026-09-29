@@ -1,4 +1,6 @@
 export type Mode = "image" | "video";
+/** Top-level screens: the two studios plus the Showcase dashboard. */
+export type Screen = Mode | "showcase";
 export type ImageAspect = "1:1" | "16:9" | "9:16" | "4:3";
 export type VideoAspect = "1:1" | "16:9" | "9:16";
 export type AspectRatio = ImageAspect;
