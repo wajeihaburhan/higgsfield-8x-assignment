@@ -58,8 +58,8 @@ CORS_ORIGINS = [o.strip() for o in os.getenv("CORS_ORIGINS", "*").split(",") if 
 SIM_SPEED = float(os.getenv("SIM_SPEED", "1.0"))
 # Probability (0..1) that a job fails during rendering, to exercise error handling in clients.
 SIM_FAILURE_RATE = float(os.getenv("SIM_FAILURE_RATE", "0"))
-# How often the worker publishes progress, in seconds.
-TICK_SECONDS = 0.25
+# How often the worker publishes progress, in seconds (tests lower it together with SIM_SPEED).
+TICK_SECONDS = float(os.getenv("SIM_TICK_SECONDS", "0.25"))
 
 logging.basicConfig(level=os.getenv("LOG_LEVEL", "INFO"), format="%(asctime)s %(levelname)s %(name)s: %(message)s")
 log = logging.getLogger("veyra.api")
@@ -334,7 +334,7 @@ class ForkResponse(BaseModel):
 
 
 class HealthResponse(BaseModel):
-    status: Literal["ok"]
+    status: Literal["online"]
     api_version: str
     engine_version: str
     uptime_seconds: float
@@ -682,7 +682,7 @@ async def health() -> HealthResponse:
     for job in JOBS_DB.values():
         counts[job["status"].value] += 1
     return HealthResponse(
-        status="ok",
+        status="online",
         api_version=API_VERSION,
         engine_version=ENGINE_VERSION,
         uptime_seconds=round(time.monotonic() - STARTED_AT, 1),

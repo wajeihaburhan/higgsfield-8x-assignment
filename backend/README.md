@@ -36,7 +36,7 @@ uvicorn main:app --reload --port 8000
 
 | Method | Path | Purpose |
 |---|---|---|
-| GET | `/health` | Status, API and engine version, uptime, queue counts by status |
+| GET | `/health` | `status: "online"`, API and engine version, uptime, queue counts by status |
 | GET | `/models?media_type=` | Model registry (3 image models, 3 video models) |
 | GET | `/generations?media_type=image\|video&model=&tag=&limit=&offset=` | Feed, newest first |
 | GET | `/generations/{id}` | One generation |
@@ -96,6 +96,19 @@ curl -s -X POST localhost:8000/api/v1/fork -H 'Content-Type: application/json' -
 - the merged `parameter_tree`;
 - `request`, a `GenerationRequest` you can POST to `/generate` as-is;
 - `job`, when `submit: true` was set.
+
+## Tests
+
+```bash
+pip install -r requirements-dev.txt   # pytest + httpx2 (the HTTP client Starlette's TestClient uses)
+pytest -v                             # 47 tests, about 2 seconds
+```
+
+`conftest.py` speeds up the simulated pipeline (`SIM_SPEED=0.02`, `SIM_TICK_SECONDS=0.002`) and restores `JOBS_DB` and `GENERATIONS_DB` after every test.
+
+Two details about how the tests run:
+- Starlette's `TestClient` runs `BackgroundTasks` before returning the response, so a job is already complete when the test polls it.
+- To inspect a job while it's still `queued`, a fixture swaps the worker for a no-op; the stage test then drives the real worker with `asyncio` and samples its progress.
 
 ## Production notes
 

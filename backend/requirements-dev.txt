@@ -1,0 +1,4 @@
+-r requirements.txt
+pytest>=8.0
+# HTTP client used by starlette.testclient (httpx2 is the maintained successor Starlette asks for)
+httpx2>=2.13

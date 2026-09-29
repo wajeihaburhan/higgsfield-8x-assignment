@@ -166,12 +166,45 @@ uvicorn main:app --reload --port 8000     # docs at http://localhost:8000/docs
 
 See [backend/README.md](backend/README.md) for endpoints, environment variables and examples. The frontend still uses its built-in mock and doesn't call the API yet; the two share the same model ids, parameters and `/mock` asset paths.
 
+## Testing
+
+### Frontend: Vitest, React Testing Library and jsdom (50 tests)
+
+```bash
+npm install
+npm run test          # or: npx vitest run   ·   watch mode: npm run test:watch
+```
+
+| File | Covers |
+|---|---|
+| `src/test/navigation.test.tsx` | Tab bar; switching between Image Studio and Video Studio; each studio keeps its draft; credit counter; profile drawer |
+| `src/test/feed.test.tsx` | Cards rendered from seed data; image-only vs video-only feeds per tab; per-media quick actions; Showcase order (images, then videos); tag and favorite filters |
+| `src/test/generate.test.tsx` | Typing a prompt, choosing 16:9 and clicking Generate; the job moves through *In queue*, *Rendering · step n/30* with a %, then *Ready* in the tray and the feed; video frame counter; disabled states |
+| `src/test/fork.test.tsx` | Clicking a card fills the parameters drawer with the parent's data; **Fork to composer** copies it with a new seed and a branch link; edits highlight changed keys; Exact recipe; the video drawer; Animate; Upscale and Variations; the Inpaint dialog |
+| `src/test/lib.test.ts`, `src/test/store.test.ts` | Pricing, mock provider determinism and relevance, status and progress, tags, lineage labels and layout, filters, store actions |
+
+**How the tests run:**
+- They render the real route components inside the real `StudioShell`.
+- `src/test/setup.tsx` replaces `next/navigation` and `next/link` with an in-memory router, fills in browser APIs that jsdom lacks, turns off animations, and resets the store before each test.
+- Progress tests use fake timers, including `Date`, so they don't wait in real time.
+
+### Backend: pytest with Starlette TestClient (47 tests)
+
+```bash
+cd backend
+source .venv/bin/activate
+pip install -r requirements-dev.txt
+pytest -v
+```
+
+The suite covers health; the feed (all items, image/video filters, paging, model and tag filters); `/generate` validation and enqueueing (202, `job_...` id format, `queued` status, cost); job polling (valid job, 404, completed results, reproducible seeds); the three-stage worker pipeline and failure path; and `/fork` (overrides, diff, lineage, no mutation of the parent, submit, 404 and 422). See [backend/README.md](backend/README.md#tests).
+
 ## Not built (time-boxed)
 
 - Sign-in, payments, a real credits backend, real AI providers, and a database. The FastAPI backend is standalone and not yet wired into the UI.
 - The mock can't "see" uploaded references or inpaint masks. Only references taken from existing results steer the output; inpainted takes show a subtle tint and their mask outline on hover.
 - The seeded clips are 4 seconds long; the 3/5/10s setting is recorded in the recipe and badges but doesn't change clip length.
-- No automated tests; shadcn/ui wasn't added (components are hand-built with Tailwind).
+- shadcn/ui wasn't added; the components are hand-built with Tailwind.
 
 ## Credits
 
