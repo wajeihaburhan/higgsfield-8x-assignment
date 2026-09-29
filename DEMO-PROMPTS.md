@@ -1,6 +1,6 @@
 # Demo prompts
 
-Generation in Takes is simulated. Each result is picked from a local library of **18 subjects**; every subject exists as a still in 1:1, 16:9, 9:16 and 4:3, and as a 4-second clip in 1:1, 16:9 and 9:16. The mock ranks subjects by keywords in your prompt.
+Generation in VEYRA is simulated. Each result is picked from a local library of **18 subjects**; every subject exists as a still in 1:1, 16:9, 9:16 and 4:3, and as a 4-second clip in 1:1, 16:9 and 9:16. The mock ranks subjects by keywords in your prompt.
 
 Every prompt below was checked to land on its subject whatever the seed. Paste one into **Image Studio** or **Video Studio** and press **Generate** (⌘/Ctrl + Enter). The first six in each studio are also one-click chips under the prompt box.
 

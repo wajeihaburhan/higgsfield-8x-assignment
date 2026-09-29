@@ -64,6 +64,9 @@ export function ShowcaseScreen() {
               Showcase <span className="text-faint">/ {projectName}</span>
             </div>
             <h1 className="mt-1 text-2xl font-semibold tracking-tight sm:text-3xl">Everything you&apos;ve made</h1>
+            <p className="mt-1 font-mono text-xs uppercase tracking-[0.2em] text-faint">
+              VEYRA · <span className="text-accent">Imagine.</span> Generate. <span className="text-success">Evolve.</span>
+            </p>
           </div>
           <div className="flex gap-2">
             <Link href="/image" className="btn-primary flex h-10 items-center gap-2 rounded-xl px-4 text-sm font-semibold">

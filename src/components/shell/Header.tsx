@@ -23,9 +23,12 @@ export function Header({ screen, energy, rendering }: { screen: Screen; energy: 
   return (
     <header className="sticky top-0 z-40 border-b border-cyan-500/15 bg-slate-950/70 pt-[env(safe-area-inset-top)] backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-[1440px] items-center gap-3 px-4 sm:px-6">
-        <Link href="/showcase" className="hidden shrink-0 items-center gap-2 sm:flex" aria-label="Takes home">
-          <span className="grid size-8 place-items-center rounded-lg bg-gradient-to-br from-accent to-success font-mono text-sm font-bold text-accent-fg shadow-[0_0_18px_rgb(0_245_255/0.45)]">T</span>
-          <span className="hidden font-semibold tracking-tight md:inline">Takes</span>
+        <Link href="/showcase" className="hidden shrink-0 items-center gap-2.5 sm:flex" aria-label="VEYRA home">
+          <span className="grid size-8 place-items-center rounded-lg bg-gradient-to-br from-accent to-success font-mono text-sm font-bold text-accent-fg shadow-[0_0_18px_rgb(0_245_255/0.45)]">V</span>
+          <span className="hidden flex-col leading-none md:flex">
+            <span className="bg-gradient-to-r from-accent to-success bg-clip-text text-base font-bold tracking-[0.22em] text-transparent">VEYRA</span>
+            <span className="mt-1 hidden font-mono text-[9px] uppercase tracking-[0.18em] text-faint xl:block">Imagine. Generate. Evolve.</span>
+          </span>
         </Link>
 
         <nav className="glass flex rounded-xl p-1 sm:ml-4" aria-label="Studios">

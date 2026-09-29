@@ -1,4 +1,6 @@
-# Takes — AI Image & Video Studio
+# VEYRA — AI Image & Video Studio
+
+*Imagine. Generate. Evolve.*
 
 A front-end MVP of an AI media-generation product with a **Showcase** dashboard and two specialized creation screens, **Image Studio** and **Video Studio**, sharing one iteration-first workflow. It's inspired by the Higgsfield create flow; generation is simulated locally.
 

@@ -1,6 +1,6 @@
-# Takes Studio API (FastAPI)
+# VEYRA Studio API (FastAPI)
 
-A single-file backend (`main.py`) for the Takes image/video studio. It provides:
+A single-file backend (`main.py`) for the VEYRA image/video studio. It provides:
 - an async generation queue with a simulated three-stage AI pipeline;
 - job polling;
 - a feed filterable by image/video;

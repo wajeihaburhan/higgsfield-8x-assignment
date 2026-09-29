@@ -13,8 +13,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Takes — AI image & video studio",
-  description: "Generate images and video, then iterate on every take: reuse, remix and vary any result.",
+  title: "VEYRA — Imagine. Generate. Evolve.",
+  description: "VEYRA is an AI image and video studio: generate stills and clips, then evolve every take by remixing, varying, upscaling and animating it.",
+  applicationName: "VEYRA",
 };
 
 export const viewport: Viewport = {

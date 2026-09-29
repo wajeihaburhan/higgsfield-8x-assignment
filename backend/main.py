@@ -1,5 +1,6 @@
 """
-Takes Studio API: a single-file FastAPI backend for an AI image/video generation platform.
+VEYRA Studio API: a single-file FastAPI backend for the VEYRA image/video generation platform.
+(Imagine. Generate. Evolve.)
 
 What it does
 ------------
@@ -46,7 +47,7 @@ from pydantic import BaseModel, ConfigDict, Field, field_serializer, field_valid
 # --------------------------------------------------------------------------------------
 
 API_VERSION = "1.0.0"
-ENGINE_VERSION = "takes-diffusion-sim/2.3.0"
+ENGINE_VERSION = "veyra-diffusion-sim/2.3.0"
 API_PREFIX = "/api/v1"
 
 # Base URL for mock media. The frontend serves /mock/img and /mock/vid from public/.
@@ -61,7 +62,7 @@ SIM_FAILURE_RATE = float(os.getenv("SIM_FAILURE_RATE", "0"))
 TICK_SECONDS = 0.25
 
 logging.basicConfig(level=os.getenv("LOG_LEVEL", "INFO"), format="%(asctime)s %(levelname)s %(name)s: %(message)s")
-log = logging.getLogger("takes.api")
+log = logging.getLogger("veyra.api")
 
 STARTED_AT = time.monotonic()
 
@@ -659,7 +660,7 @@ seed_generations()
 # --------------------------------------------------------------------------------------
 
 app = FastAPI(
-    title="Takes Studio API",
+    title="VEYRA Studio API",
     version=API_VERSION,
     description="Async image & video generation queue with job polling, feed filtering and parameter forking.",
 )
