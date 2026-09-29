@@ -146,9 +146,21 @@ src/store/useStudio.ts  Zustand store saved to localStorage (takes, drafts, acti
   - Variations use deterministic crop, tint and mirror "looks", so four variations of one source look distinct.
 - **Swapping in a real provider** means replacing `simulate()` in `src/lib/mock.ts` with an API call that returns the same fields.
 
+## Backend (FastAPI)
+
+`backend/main.py` is a single-file FastAPI service providing an async generation queue with staged progress, job polling, a feed filterable by image/video, and parameter forking with lineage. Storage is in memory.
+
+```bash
+cd backend && python3 -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
+uvicorn main:app --reload --port 8000     # docs at http://localhost:8000/docs
+```
+
+See [backend/README.md](backend/README.md) for endpoints, environment variables and examples. The frontend still uses its built-in mock and doesn't call the API yet; the two share the same model ids, parameters and `/mock` asset paths.
+
 ## Not built (time-boxed)
 
-- Sign-in, payments, a real credits backend, real AI providers, and a server or database.
+- Sign-in, payments, a real credits backend, real AI providers, and a database. The FastAPI backend is standalone and not yet wired into the UI.
 - The mock can't "see" uploaded references or inpaint masks. Only references taken from existing results steer the output; inpainted takes show a subtle tint and their mask outline on hover.
 - The seeded clips are 4 seconds long; the 3/5/10s setting is recorded in the recipe and badges but doesn't change clip length.
 - No automated tests; shadcn/ui wasn't added (components are hand-built with Tailwind).
